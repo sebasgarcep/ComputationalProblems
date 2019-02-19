@@ -148,14 +148,9 @@ def compare (line):
 
 result = 0
 file = open('poker.txt', 'r')
-output = open('results.csv', 'w')
 for line in file.readlines():
     decs = compare(line)
     if decs:
         result += 1
-        output.write('1\n')
-    else:
-        output.write('0\n')
 file.close()
-output.close()
 print(result)
