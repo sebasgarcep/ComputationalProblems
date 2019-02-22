@@ -5,35 +5,10 @@ is a vertex in a graph and that edges exist when they can be concatenated. Then
 use recursive search to find primes lower than it that form a fully connected
 graph of size 5. Search until the prime is larger than the smallest sum that was
 found.
-
-Possible Optimizations:
-    - Instead of using set intersection one can use bitmasks.
-    - Remove primes that when added to the searched prime, add up to more than
-        or equal to the min_sum.
-    - Add the digits: numbers with a digit sum (1 mod 3) can only be concatenated
-        with numbers with a digit sum (0 mod 3). Same goes for numbers with
-        (2 mod 3) digit sum.
 """
-
-# FIXME: doesn't yet search up to the upper bound, even though it find the answer
-
 
 import math
 import time
-
-def sieve (n):
-    slots = [True] * (n + 1)
-    slots[0] = False
-    slots[1] = False
-    idx = 2
-    primes = []
-    while idx < len(slots):
-        if slots[idx]:
-            primes.append(idx)
-            for ptr in range(2 * idx, n + 1, idx):
-                slots[ptr] = False
-        idx += 1
-    return (primes, slots)
 
 def is_prime (n):
     if n == 2:
@@ -45,21 +20,52 @@ def is_prime (n):
             return False
     return True
 
-def count_digits (n):
-    d = 0
+def get_digits (n):
+    d = []
     v = n
     while v > 0:
+        d.append(v % 10)
         v = v // 10
-        d += 1
     return d
 
+def count_bits (n):
+    return bin(n).count('1')
+
+def get_bit_positions (n):
+    iterator = []
+    pos = 0
+    while n > 0:
+        if n & 1:
+            iterator.append(pos)
+        n = n >> 1
+        pos += 1
+    return iterator
+
 start_time = time.time()
-limit = 10 ** 6
-(primes, _) = sieve(limit)
-primes = [3] + primes[3:] # 2 and 5 will never be in the minimal set, but 3 is
-digits = [count_digits(prime) for prime in primes]
-relations = [None] * len(primes)
+# I know beforehand that there is a solution that adds up to less than 30k
+limit = 3 * (10 ** 4)
 size = 5
+slots = [True] * (limit + 1)
+slots[0] = False
+slots[1] = False
+idx = 2
+primes = []
+digits = []
+relations = []
+min_sum = math.inf
+while idx < len(slots):
+    if slots[idx]:
+        num_digits = get_digits(idx)
+        sum_digits = sum(num_digits) % 2
+
+        if idx == 3 or idx > 5:
+            primes.append(idx)
+            digits.append(len(num_digits))
+            relations.append(2 ^ idx)
+
+        for ptr in range(2 * idx, limit + 1, idx):
+            slots[ptr] = False
+    idx += 1
 
 def test (i1, i2):
     if not is_prime(primes[i1] * (10 ** digits[i2]) + primes[i2]):
@@ -70,10 +76,10 @@ def test (i1, i2):
 
 def search (idx, iterator, k, comp, lst):
     if k == size - 1:
-        return comp if len(comp) == size else None
+        return comp if count_bits(comp) == size else None
     for pos in range(lst + 1, len(iterator)):
-        updt = comp.intersection(relations[iterator[pos]])
-        if len(updt) < size:
+        updt = comp & relations[iterator[pos]]
+        if count_bits(updt) < size:
             continue
         result = search(idx, iterator, k + 1, updt, pos)
         if result is not None:
@@ -82,26 +88,27 @@ def search (idx, iterator, k, comp, lst):
 
 def is_fully_connected (idx):
     comp = relations[idx]
-    if len(comp) < size:
+    if count_bits(comp) < size:
         return None
-    iterator = list(relations[idx].difference(set([idx])))
+    iterator = get_bit_positions(comp ^ (2 ** idx))
     return search(idx, iterator, 0, comp, -1)
 
-min_sum = math.inf
+
 for idx in range(0, len(primes)):
     print(primes[idx])
     if primes[idx] >= min_sum:
         break
-    relations[idx] = set([idx])
+    relations[idx] = 2 ** idx
     for pos in range(0, idx):
         if test(idx, pos):
-            relations[idx].add(pos)
-            relations[pos].add(idx)
+            relations[idx] = relations[idx] | (2 ** pos)
+            relations[pos] = relations[pos] | (2 ** idx)
     result = is_fully_connected(idx)
     if result is not None:
-        alt_sum = sum([primes[pos] for pos in result])
+        alt_sum = sum([primes[pos] for pos in get_bit_positions(result)])
         if alt_sum < min_sum:
-            alt_sum = min_sum
+            min_sum = alt_sum
 
 elapsed_time = time.time() - start_time
+print('Solution: %d' % min_sum)
 print('%.4f secs' % elapsed_time)
