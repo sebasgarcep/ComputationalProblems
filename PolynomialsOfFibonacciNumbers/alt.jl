@@ -32,9 +32,9 @@ end
 
 start = time()
 
-n = 240 # BigInt(10^15)
+n = BigInt(10^15)
 m = BigInt(factorial(15))
-k = 12
+k = 100
 result = BigInt(0)
 
 for x in 1:k
