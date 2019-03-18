@@ -1,6 +1,8 @@
 #=
 Alternative Approach:
-Use the fact that (a/b) mod m = (a mod (m * b)) / b, when a = 0 mod b.
+Use the fact that (a/b) mod m = (a mod (m * b)) / b, when a = 0 mod b. This can
+be proven by noticing that if a/b = pm + q, then a = p * m * b + b * q. Therefore,
+a mod (m * b) = b * q.
 =#
 
 using Printf
