@@ -1,5 +1,8 @@
 #=
 Approach:
+Generate all possible combinations that add up to 20 balls and where no color
+has more than 10 balls. Their probability is proportional to the number of ways
+in which you can choose k balls of a certain color from the 10 available balls.
 =#
 
 using Printf
