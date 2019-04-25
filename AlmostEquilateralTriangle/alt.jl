@@ -49,7 +49,7 @@ perimeter.
 
 Notice that when 2 * p = 2 mod 3, then the off-by-one side is larger than a by 1.
 If 2 * p = 1 mod 3, then the off-by-one side is smaller than a by 1, and therefore
-a is at least 2 and 2 * p is at least 5.
+a is at least 2 and 2 * p is at least 7.
 =#
 
 using Printf
@@ -82,7 +82,7 @@ while p <= positive_bound
     q_prev = q_temp
     if p^2 - d * q^2 == 1
         val = 2 * p
-        if (mod(val, 3) == 1 && p < positive_bound && val >= 5) ||
+        if (mod(val, 3) == 1 && p < positive_bound && val >= 7) ||
             (mod(val, 3) == 2 && p < negative_bound)
             result += val
         end
