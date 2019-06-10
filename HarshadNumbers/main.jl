@@ -1,6 +1,10 @@
 #=
 Approach:
-All 1-digit numbers are Harshad Numbers.
+If we know all k-digit strong, truncatable Harshad numbers, then we can construct
+all (k + 1)-digit strong, truncatable Harshad numbers by appending all possible
+digits to the end and testing for the necessary conditions. We can also test the
+numbers we construct to see if they are strong, truncatable Harshad primes. Once
+we go over 14 digits we stop searching.
 =#
 
 using Printf
