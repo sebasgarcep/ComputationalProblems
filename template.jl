@@ -4,10 +4,14 @@ Approach:
 
 using Printf
 
-start = time()
-result = 0
+function main()
+    start = time()
+    result = 0
 
-println(result)
+    println(result)
 
-elapsed = time() - start
-@printf("Took: %.4f secs\n", elapsed)
+    elapsed = time() - start
+    @printf("Took: %.4f secs\n", elapsed)
+end
+
+main()
