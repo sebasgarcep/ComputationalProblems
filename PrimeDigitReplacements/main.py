@@ -21,8 +21,6 @@ Approach:
     than 2 (or 1 when the leading digit is replaceable).
 """
 
-# FIXME: solve the problem of the leading digits
-
 def sieve(n):
     slots = [True] * (n + 1)
     slots[0] = False
