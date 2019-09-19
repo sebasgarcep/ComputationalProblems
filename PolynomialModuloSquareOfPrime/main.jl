@@ -18,7 +18,63 @@ algorithm. Then using Hansel's lemma we can lift this solution, as any root to t
 previous polynomial must be simple (2 * u = 0 (mod p) implies u = 0 (mod p), which
 is not a solution to the previous polynomial).
 
-FIXME: proof for Hansel's Lemma
+Lemma 1:
+--------
+
+For a given polynomial f(x) = an * x^n + an-1 * x^(n-1) + ... + a1 * x + a0,
+with coefficients in the integers and n >= 0, let p be a prime and m > 0. Then
+for any integer t, we have:
+
+f(x + t * p^m) = f(x) + t * p^m * f'(x) (mod p^(m + 1))
+
+Proof:
+------
+
+Notice that, for i >= 2:
+
+(x + t * p^m)^i = x^i + i * x^(i - 1) * t * p^m + i * (i - 1) / 2 * x^(i - 1) * t^2 * p^(2 * m) + ...
+
+Notice that clearly i * m >= m + 1, therefore mod p^(m + 1) these terms cancel out.
+Thus, under the modulus:
+
+(x + t * p^m)^i = x^i + i * x^(i - 1) * t * p^m
+
+Clearly, d/dx[ x^i ] = i * x^(i - 1). Therefore the equation is satisfied for a
+single term. Applying the same logic for each term we get the desired result for i > 2.
+
+For i = 0, 1 the result is trivial.
+
+Hensel's Lemma:
+---------------
+
+Let p be an odd prime, f in Z[x], and m, r in Z such that m > 0 and f(r) = 0 (mod p^m). Then:
+
+1. If f'(r) != 0 (mod p) and f(r) != 0 (mod p^(m + 1)), then there is a unique integer t such that
+1 <= t <= p - 1 and f(r + t * p^m) = 0 (mod p^(m + 1)). Specifically, t is determined by the equation
+t * f'(r) = -f(r) / p^m (mod p).
+
+2. If f'(r) = 0 (mod p) and f(r) = 0 (mod p^(m + 1)), then for any t such that 1 <= t <= p - 1,
+f(r + t * p^m) = 0 (mod p^(m + 1)).
+
+3. If f'(r) = 0 (mod p) and f(r) != 0 (mod p^(m + 1)) then there is no integer 1 <= t <= p - 1 such
+that f(r + t * p^m) = 0 (mod p^(m + 1)).
+
+Proof:
+------
+
+1. Clearly p^m | f(r), and also f(r) / p^m != 0 (mod p), otherwise f(r) = 0 (mod p^(m + 1)).
+Also, because f'(r) != 0, it has a multiplicative inverse r, such that r * f'(t) = 1 (mod p).
+Then -f(r) / p^m * r * f'(r) = -f(r) / p^m (mod p). Let t = -f(r) / p^m * r. Therefore:
+
+t * f'(r) = -f(r) / p^m (mod p)
+
+Then:
+
+f(r + t * p^m) = f(r) + t * p^m * f'(r) = f(r) - p^m * f(r) / p^m = f(r) - f(r) = 0 (mod p^(m + 1))
+
+2. f(r + t * p^m) = f(r) + t * p^m * f'(r) = 0 (mod p^(m + 1))
+
+3. f(r + t * p^m) = f(r) + t * p^m * f'(r) = f(r) != 0 (mod p^(m + 1))
 
 (http://math453spring2009.wikidot.com/hensel-s-lemma)
 (https://en.wikipedia.org/wiki/Hensel%27s_lemma)
