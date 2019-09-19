@@ -42,7 +42,7 @@ Mod 5:
 If n = 2 (mod 5), then 2 * n^2 - 1 = 2 * 4 - 1 = 8 - 1 = 7 = 2 (mod 5)
 If n = 3 (mod 5), then 2 * n^2 - 1 = 2 * 9 - 1 = 18 - 1 = 17 = 2 (mod 5)
 
-Finally, we can usethe following statement we can use a solution to the modular
+Finally, the following statement allows us to use a solution to the modular
 equation to find all values of t(n) which satisfy that equation:
 
 Claim 2:
@@ -57,6 +57,37 @@ t(k * p +- n) = 2 * (k * p +- n)^2 - 1
               = 2 * (+- n)^2 - 1
               = 2 * n^2 - 1
               = 0 (mod p)
+
+Euler's Criterion
+-----------------
+
+Let p be prime and n be a positive integer. Then n is a quadratic residue (i.e. a
+square root modulo p) if and only if:
+
+n^((p - 1) / 2) = 1 (mod p)
+
+Proof:
+------
+
+If p = 2, then the result is trivial. Let p > 2.
+
+<=] Let n^((p - 1) / 2) = 1 (mod p). Let y be a generator of the multiplicative group
+of Zp. Therefore, for some k, y^k = n. Thus:
+
+y^(k * (p - 1) / 2) = 1 (mod p)
+
+Because the exponent has to be a multiple of p - 1, then k / 2 must be an integer.
+Denote k' = k / 2. Let r be such that r = y^k'. Therefore:
+
+r^2 = y^(2 * k') = y^k = n (mod p)
+
+Therefore n is a quadratic residue.
+
+=>] Let n be a quadratic residue. Then for some m, we have that n = m^2 (mod p). Thus:
+
+n^((p - 1) / 2) = m^(p - 1) = 1 (mod p)
+
+by Fermat's little theorem.
 
 FIXME: missing proof for the Tonelli-Shank's algorithm.
 
