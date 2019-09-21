@@ -89,10 +89,61 @@ n^((p - 1) / 2) = m^(p - 1) = 1 (mod p)
 
 by Fermat's little theorem.
 
-FIXME: missing proof for the Tonelli-Shank's algorithm.
+Tonelli-Shanks Algorithm
+------------------------
+
+Let p > 2 be a prime number and n be the number of which we want to calculate its square root.
+First let's test whether a given number is a quadratic residue using Euler's criterion.
+Then let's find values for Q and S such that p - 1 = Q * 2^S and Q is odd. If S = 1, then
+p - 1 = 2 * Q. Thus p - 1 = 2 (mod 4) <=> p + 1 = 0 (mod 4). Now, notice that:
+
+(n^((p + 1) / 4))^2 = n^((p + 1) / 2) = n * n^((p - 1) / 2) = n * 1 = n
+
+where the last substitution comes from Euler's criterion. Therefore assume S > 1. Let's
+find a value of z that doesn't satisfy Euler's criterion. Because half of the values will
+not satisfy it, then we can easily find it by testing consecutive values for z until we
+find one that doesn't.
+
+Now let R = n^((Q + 1) / 2). If t = n^Q = 1 (mod p), then R is a square root of n as
+R^2 = n^(Q + 1) = n * n^Q = n. Therefore assume it is not. Let M = S. Then R^2 = n * t (mod p)
+and t is a 2^(M - 1)-th root of 1, because:
+
+t^(2^(M - 1)) = t^(2^(S - 1)) = n^(Q * 2^(S - 1)) = n^((p - 1) / 2) = 1
+
+by Euler's criterion. Therefore the idea is to use the values of R and t for M to find values
+of R and t for M - 1. That way, when M = 1, t is a 2^0-th root of 1, i.e. t = 1 and we are done.
+
+Now, let's find the least i, with 0 < i < M, such that t^(2^i) = 1. There must be at least one
+as t^(2^(M - 1)) = 1. This can be found by repeatedly squaring t. The next value of R can be
+found by multiplying it times a factor b. Therefore to mantain the invariant we need to multiply
+t times b^2. So we must find a factor b such that t * b^2 is a 2^(M - 2)-th root of 1. That is:
+
+(t * b^2)^(2^(M - 2)) = 1 (mod p)
+t^(2^(M - 2)) * b^(2^(M - 1)) = 1 (mod p)
+
+If t^(2^(M - 2)) = 1, then b = 1 and we are done. Otherwise:
+
+b^(2^(M - 1)) = -1 (mod p)
+
+Because we know that z^Q is a 2^(S - 1)-th root of -1, therefore, (z^Q)^2 is a 2^(S - 2)-th root
+of -1, (z^Q)^4 is a 2^(S - 3)-th root of -1, (z^Q)^8 is a 2^(S - 4)-th root of -1, and so on.
+Therefore we can find 2^i-th roots of -1 by repeatedly squaring z^Q.
+
+In general, if for some iteration we have a value c such that it is a 2^(M - 1)-th root of -1,
+we can use that c to find the 2^i-th root of -1 by repeatedly squaring it. This allows us to
+find the next value of b, by setting b = c^(2^(M - i - 1)).
+
+Finally, for the next iteration we must have that:
+
+M <- i
+t <- t * b^2
+R <- R * b
+c <- b^2
+
+Because i < M, after a finite number of iterations the algorithm must halt. Also clearly,
+setting c to b^2 preserved the fact that c must be a 2^(M - 1)-th root of -1.
 
 =#
-
 
 using Printf
 
