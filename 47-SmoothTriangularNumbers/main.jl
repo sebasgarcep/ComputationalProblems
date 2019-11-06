@@ -28,10 +28,13 @@ Properties of the Lucas Function Un
 
 Let x^2 - D * y^2 = 1 be Pell's equation. Let (xn, yn) be the nth solution to this equation. Then:
 
-1. xn + sqrt(D) * yn = (x1 + sqrt(D) * y1)^n, where x1 + sqrt(D) * y1 is the smallest solution to the problem.
+1. xn + sign(n) * sqrt(D) * yn = (x1 + sqrt(D) * y1)^n, where x1 + sqrt(D) * y1 is the smallest solution
+to the problem.
 
 Proof:
 ------
+
+First let us prove the case for n >= 0.
 
 Clearly, x1 + sqrt(D) * y1 is an unit of the ring Z[sqrt(D)]. Notice that because the norm is multiplicative
 then N((x1 + sqrt(D) * y1)^n) = N(x1 + sqrt(D) * y1)^n = 1^n = 1. Thus (x1 + sqrt(D) * y1)^n is a solution
@@ -47,6 +50,14 @@ a < x1 + sqrt(D) * y1
 
 But this contradicts the fact that x1 + sqrt(D) * y1 is the smallest solution, which must exists as all solutions
 are convergents of the sqrt(D) and can therefore be ordered.
+
+Finally notice that:
+
+xn - sqrt(D) * yn = (xn - sqrt(D) * yn) * (xn + sqrt(D) * yn) / (xn + sqrt(D) * yn)
+                  = (xn^2 - D * yn^2) / (xn + sqrt(D) * yn)
+                  = 1 / (xn + sqrt(D) * yn)
+                  = 1 / (x1 + sqrt(D) * y1)^n
+                  = (x1 + sqrt(D) * y1)^-n
 
 -------------------------------------------------------------------------------------------------------------
 
@@ -66,7 +77,55 @@ g. Umn = sum(i >= 0) (n choose 2 * i + 1) * D^i * Um^(2 * i + 1) * y1^(2 * i) * 
 Proof:
 ------
 
-FIXME: Prove this.
+a. x2n + sqrt(D) * y2n = (x1 + sqrt(D) * y1)^(2 * n)
+                       = ((x1 + sqrt(D) * y1)^n)^2
+                       = (xn + sqrt(D) * yn)^2
+                       = xn^2 + sqrt(D) * 2 * xn * yn + D * yn^2
+
+Thus, x2n = xn^2 + D * yn^2 = 2 * xn^2 + D * yn^2 - xn^2 = 2 * xn^2 - 1.
+
+b. Due to the previous proof y2n = 2 * xn * yn, thus: 2 * xn = y2n / yn = (y2n / y1) / (yn / y1) = U2n / Un,
+and therefore U2n = 2 * xn * Un.
+
+c. Without loss of generality, assume all signs are positive:
+
+xm+n + sqrt(D) * ym+n = (x1 + sqrt(D) * y1)^(m + n)
+                      = (xm + sqrt(D) * ym) * (xn + sqrt(D) * yn)
+                      = xm * xn + sqrt(D) * ym * xn + sqrt(D) * yn * xm + D * ym * yn
+
+Thus: xm+n = xm * xn +- D * ym * yn.
+
+d. By the previous proof ym+n = xn * ym + xm * yn. Thus:
+
+ym+n / y1 = xn * ym / y1 + xm * yn / y1
+Um+n = xn * Um + xm * Un
+
+e. xn + sqrt(D) * yn = (x1 + sqrt(D) * y1)^n
+                     = sum(k = 0, n) (n choose k) sqrt(D)^k * y1^k * x1^(n - k)
+
+Thus:
+
+yn = sum(k >= 0) (n choose 2 * k + 1) D^k * y1^(2 * k + 1) * x1^(n - 2 * k - 1)
+yn / y1 = sum(k >= 0) (n choose 2 * k + 1) D^k * y1^(2 * k) * x1^(n - 2 * k - 1)
+Un = sum(k >= 0) (n choose 2 * k + 1) D^k * y1^(2 * k) * x1^(n - 2 * k - 1)
+
+f. By the previous proof:
+
+xn = sum(k >= 0) (n choose 2 * k) D^k * y1^(2 * k) * x1^(n - 2 * k)
+
+g. xmn + sqrt(D) * ymn = (x1 + sqrt(D) * y1)^(m * n)
+                       = ((x1 + sqrt(D) * y1)^m)^n
+                       = (xm + sqrt(D) * ym)^n
+                       = sum(k = 0, n) (n choose k) sqrt(D)^k * ym^k * xm^(n - k)
+
+Thus:
+
+ymn = sum(k >= 0) (n choose 2 * k + 1) D^k * ym^(2 * k + 1) * xm^(n - 2 * k - 1)
+ymn / y1 = sum(k >= 0) (n choose 2 * k + 1) D^k * ym^(2 * k + 1s) * xm^(n - 2 * k - 1) / y1
+Umn = sum(k >= 0) (n choose 2 * k + 1) D^k * ym^(2 * k + 1) * xm^(n - 2 * k - 1) / y1
+Umn = sum(k >= 0) (n choose 2 * k + 1) D^k * ym^(2 * k + 1) / y1^(2 * k + 1) * y1^(2 * k + 1) * xm^(n - 2 * k - 1) / y1
+Umn = sum(k >= 0) (n choose 2 * k + 1) D^k * ym^(2 * k + 1) / y1^(2 * k + 1) * y1^(2 * k) * xm^(n - 2 * k - 1)
+Umn = sum(k >= 0) (n choose 2 * k + 1) D^k * Um^(2 * k + 1) * y1^(2 * k) * xm^(n - 2 * k - 1)
 
 -------------------------------------------------------------------------------------------------------------
 
