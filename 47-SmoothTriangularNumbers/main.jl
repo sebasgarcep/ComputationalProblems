@@ -246,6 +246,27 @@ contradicts the definition of w(p). Thus v = 0. That is, n is evenly divisible b
 
 In particular, w(p) divides (p - e) / 2.
 
+-------------------------------------------------------------------------------------------------------------
+
+Lemma 2
+-------
+
+Let p > 3 be a prime dividing D * y1. Then Up = p (mod p^2)
+
+Proof:
+------
+
+Using e:
+
+Up = sum(i >= 0) (p choose 2 * i + 1) * D^i * y1^(2 * i) * x1^(p - 1 - 2 * i) (mod D^2 * y1^2)
+   = (p choose 1) * x1^(p - 1) + (p choose 3) * D * y1^2 * x1^(p - 3) (mod D^2 * y1^2)
+   = p * x1^(p - 1) + (p choose 3) * D * y1^2 * x1^(p - 3) (mod D^2 * y1^2)
+
+Since p | D * y1 and p | (p choose 3), then Up = p * x1^(p - 1) (mod p^2). Since x1^(p - 1) = 1 (mod p), then
+x1^(p - 1) = (1 + k * p) (mod p^2), for some k. Thus Up = p * x1^(p - 1) = p * (1 + k * p) = p (mod p^2).
+
+-------------------------------------------------------------------------------------------------------------
+
 FIXME: missing proof for Stormer's theorem.
 ---------------------------------------------------------------------------------------------------
 
