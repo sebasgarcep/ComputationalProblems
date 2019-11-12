@@ -129,11 +129,122 @@ Umn = sum(k >= 0) (n choose 2 * k + 1) D^k * Um^(2 * k + 1) * y1^(2 * k) * xm^(n
 
 -------------------------------------------------------------------------------------------------------------
 
+Definition: Rank of Apparition
+------------------------------
+
+Let p >= 2 be a prime, and let w(p) be the least positive j for which Uj is divisible by p.
+
+-------------------------------------------------------------------------------------------------------------
+
 Lemma 1 (Law of Apparition)
 ---------------------------
 
+Let p >= 2 be a prime number. Then:
+
+1. w(2) = 2.
+2. w(p) = p if p divides D * y1.
+3. For any other prime p, w(p) divides (p - e) / 2, where e = D^((p - 1) / 2) (mod p).
+
 Proof:
 ------
+
+1. U1 = 1. U2 = 2 * x1 * U1 = 2 * x1 (using b). Thus 2 | U2.
+
+2. If p divides D * y1, then (using e):
+
+Un = sum(i >= 0) (n choose 2 * i + 1) * D^i * y1^(2 * i) * x1^(n - 1 - 2 * i) (mod p)
+
+when i > 0, the term is a factor of D * y1, therefore it equals 0 mod p. Thus i = 0. Using this:
+
+Un = (n choose 1) * x1^(n - 1) = n * x1^(n - 1) (mod p)
+
+Also, because x1^2 - D * y1^2 = 1, then x1^2 = 1 (mod p). Because Zp has no zero divisors, this
+equation has only two solutions x1 = -1 and x1 = 1. Thus p does not divide x1 and therefore can only
+divide n. Thus w(p) = p.
+
+3. If p > 2 and p does not divide D * y1, then (using e):
+
+Up = sum(i >= 0) (p choose 2 * i + 1) * D^i * y1^(2 * i) * x1^(p - 1 - 2 * i) (mod p)
+
+Note that (p choose k) = p! / (k! * (p - k)!). Clearly, p | p!, therefore p | (p choose k),
+as p cannot divide k! nor (p - k)!, except when k = p or p - k = p (k = 0). Thus 2 * i + 1 = p,
+as 2 * i + 1 > 0. Therefore:
+
+Up = D^((p - 1) / 2) * y1^(p - 1) = D^((p - 1) / 2) = e (mod p)
+
+Similarly, using f, we get:
+
+xp = sum(i >= 0) (p choose 2 * i) * D^i * y1^(2 * i) * x1^(p - 2 * i) (mod p)
+xp = x1^p = x1 (mod p)
+
+Notice that p does not divide D * y1, and thus it can't divide D. Therefore:
+
+e = D^((p - 1) / 2) = +- 1 (mod p).
+
+Using d, if e = 1 (mod p):
+
+Up-e = xe * Up - xp * Ue (mod p)
+     = x1 * e - x1 * U1 (mod p)
+     = x1 * (e - 1) (mod p)
+     = 0 (mod p)
+
+If e = -1 (mod p), then:
+
+Up-e = Up+1 = x1 * Up + xp * U1 (mod p)
+            = x1 * e + x1 (mod p)
+            = x1 * (e + 1) (mod p)
+            = 0 (mod p)
+
+And using c, if e = 1 (mod p):
+
+xp-e = xp * xe - D * yp * ye (mod p)
+     = xp * x1 - D * yp * y1 (mod p)
+     = x1^2 - D * yp * y1 (mod p)
+     = x1^2 - D * (yp / y1) * y1^2 (mod p)
+     = x1^2 - D * Up * y1^2 (mod p)
+     = x1^2 - D * e * y1^2 (mod p)
+     = x1^2 - D * y1^2 (mod p)
+     = 1 (mod p)
+
+Similarly, if e = -1 (mod p):
+
+xp-e = xp+1 (mod p)
+     = xp * x1 + D * yp * y1 (mod p)
+     = x1^2 + D * yp * y1 (mod p)
+     = x1^2 + D * (yp / y1) * y1^2 (mod p)
+     = x1^2 + D * Up * y1^2 (mod p)
+     = x1^2 + D * e * y1^2 (mod p)
+     = x1^2 - D * y1^2 (mod p)
+     = 1 (mod p)
+
+Now, using a:
+
+xp-e = 2 * x((p - e) / 2)^2 - 1
+
+Thus, because xp-e = 1 (mod p):
+
+2 * x((p - e) / 2)^2 - 1 = 1 (mod p)
+2 * x((p - e) / 2)^2 - 2 = 0 (mod p)
+2 * (x((p - e) / 2)^2 - 1) = 0 (mod p)
+2 * (x((p - e) / 2) - 1) * (x((p - e) / 2) + 1) = 0 (mod p)
+
+Thus p does not divide x((p - e) / 2). But using b:
+
+Up-e = 2 * x((p - e) / 2) * U((p - e) / 2)
+
+Because Up-e = 0 (mod p), p must divide U((p - e) / 2). Thus w(p) is at most (p - e) / 2.
+
+Let Un be such that p | Un. Let v = n - w(p). Thus:
+
+Un = Uw(p)+v = xv * Uw(p) + xw(p) * Uv
+
+Notice that Un = xw(p) * Uv (mod p), as p | Uw(p). If v >= w(p), we can keep subtracting w(p) from it,
+and cancelling terms until v < w(p). In the case v < w(p) then either p | xw(p) or p | Uv. Notice that
+if we let p | xw(p) then Uw(p)-1 = x1 * Uw(p) - xw(p) * U1 = 0 (mod p), as p | Uw(p), which is a
+contradiction. Thus p cannot divide xw(p) and must divide Uv. But v being smaller than w(p) and positive
+contradicts the definition of w(p). Thus v = 0. That is, n is evenly divisible by w(p).
+
+In particular, w(p) divides (p - e) / 2.
 
 FIXME: missing proof for Stormer's theorem.
 ---------------------------------------------------------------------------------------------------
