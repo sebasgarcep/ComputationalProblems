@@ -310,6 +310,25 @@ the highest power of p that can divide U(k * m * p^l) is p^(a + l).
 
 -------------------------------------------------------------------------------------------------------------
 
+Definition
+----------
+
+Let Un = (a^n - b^n) / (a - b). Then we will define Gn to be a subset of factors of Un, in terms of a and b.
+Specifically:
+
+Gn = prod(h = 1, n - 1, h coprime to n) [ a - b * e^(2 * pi * i * h / n) ]
+
+Also, a prime factor of Gn which divides n is called intrinsic. Otherwise it is called extrinsic.
+
+Corollaries:
+------------
+
+1. Gn is an integer. To see this FIXME: prove this
+
+2. Un = prod(s | n) Gs. To see this: FIXME: prove this
+
+-------------------------------------------------------------------------------------------------------------
+
 FIXME: missing proof for Stormer's theorem.
 ---------------------------------------------------------------------------------------------------
 
