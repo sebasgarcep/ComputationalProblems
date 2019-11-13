@@ -267,6 +267,49 @@ x1^(p - 1) = (1 + k * p) (mod p^2), for some k. Thus Up = p * x1^(p - 1) = p * (
 
 -------------------------------------------------------------------------------------------------------------
 
+Lemma 3 (Law of Repetition)
+---------------------------
+
+Let l >= 0, and let k be an integer not divisible by the prime p. Let p^a, a > 0, be the highest power of p
+dividing Um. Then the highest power of p dividing U(k * m * p^l) is p^(a + l).
+
+Proof:
+------
+
+Let l = 0. Then, using g:
+
+Ukm = sum(i >= 0) (k choose 2 * i + 1) * D^i * Um^(2 * i + 1) * y1^(2 * i) * xm^(k - 1 - 2 * i) (mod Um^3)
+    = k * Um * xm^(k - 1) (mod Um^3)
+
+Therefore Ukm = k * Um * xm^(k - 1) + r * Um^3, for some integer r. Therefore p^a clearly divides Ukm. To
+see that no higher power of p divides Ukm notice that by hypothesis p does not divide k. Also, because
+p | Um = ym / y1, then p | ym. Therefore:
+
+xm^2 - D * ym^2 = 1 (mod p)
+xm^2 = 1 (mod p)
+
+Therefore p does not divide xm, and therefore the largest power of p that divides Ukm must be p^a.
+
+Let l = 1. Then, using g:
+
+Ukmp = sum(i >= 0) (k * p choose 2 * i + 1) * D^i * Um^(2 * i + 1) * y1^(2 * i) * xm^(k * p - 1 - 2 * i) (mod Um^3)
+    = k * p * Um * xm^(k * p - 1) (mod Um^3)
+
+Using a similar argument to the one before we can prove that the largest power of p that divides Ukmp must
+be p^(a + 1).
+
+Let l > 1. Assume that the statement is true for 0, 1, 2, ... , l - 1. Then the highest power of p dividing
+U(k * m * p^(l - 1)) is p^(a + l - 1). Then, using g:
+
+U(k * m * p^l) = sum(i >= 0) (p choose 2 * i + 1) * D^i * U(k * m * p^(l - 1))^(2 * i + 1) * y1^(2 * i) * x(k * m * p^(l - 1))^(p - 1 - 2 * i) (mod U(k * m * p^(l - 1))^3)
+    = p * U(k * m * p^(l - 1)) * x(k * m * p^(l - 1))^(p - 1) (mod U(k * m * p^(l - 1))^3)
+    = p * U(k * m * p^(l - 1)) * x(k * m * p^(l - 1))^(p - 1) (mod U(k * m * p^(l - 1))^3)
+
+The highest power of p that divides U(k * m * p^(l - 1)) is p^(a + l - 1). As p does not divide x(k * m * p^(l - 1))
+the highest power of p that can divide U(k * m * p^l) is p^(a + l).
+
+-------------------------------------------------------------------------------------------------------------
+
 FIXME: missing proof for Stormer's theorem.
 ---------------------------------------------------------------------------------------------------
 
