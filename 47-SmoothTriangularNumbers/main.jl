@@ -323,14 +323,62 @@ Also, a prime factor of Gn which divides n is called intrinsic. Otherwise it is 
 Corollaries:
 ------------
 
-1. Gn is an integer. To see this FIXME: prove this
+1. Gn is an integer. To see this notice that:
+
+a. Gn is symmetric with respect to a and b. If n = 2, then G2 = a + b = b + a. If n > 2, then, letting
+s = e^(2 * pi * i / n) and Gn' be the sequence where a and b are swapped around, we get:
+
+Gn = prod(h = 1, n - 1, h coprime to n) (a - b * s^h)
+   = prod(h = 1, n - 1, h coprime to n) (a - b * s^h) * -s^(n - h) / -s^(n - h)
+   = prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) / -s^(n - h)
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) -s^(n - h) ]
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ (-1)^phi(n) * prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
+
+Notice that phi(n) is even for n > 2, thus:
+
+Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
+
+Notice also that a product over n - h can be swapped around into a product over h as there is a one-to-one mapping
+between n - h and h, as both are coprime or both aren't. Thus:
+
+Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^h) ] / [ prod(h = 1, n - 1, h coprime to n) s^h ]
+   = Gn' / [ prod(h = 1, n - 1, h coprime to n) s^h ]
+   = Gn' / s^( sum( h = 1, n - 1, h coprime to n ) h )
+
+We claim that sum( h = 1, n - 1, h coprime to n ) h is a multiple of n and thus the denominator equals 1. To see
+this notice that:
+
+sum( h = 1, n - 1, h coprime to n ) h = sum( h = 1, n - 1, h coprime to n ) n - h
+2 * sum( h = 1, n - 1, h coprime to n ) h = sum( h = 1, n - 1, h coprime to n ) n
+2 * sum( h = 1, n - 1, h coprime to n ) h = n * sum( h = 1, n - 1, h coprime to n ) 1
+2 * sum( h = 1, n - 1, h coprime to n ) h = n * phi(n)
+sum( h = 1, n - 1, h coprime to n ) h = n * phi(n) / 2
+
+b. It is clear that Gn = prod(h = 1, n - 1, h coprime to n) (a - b * s^pi(h)) where pi is a permutation function
+over the possible values of h. Thus Gn is said to be symmetric with respect to the roots of unity.
+
+c. If n = 2, then Gn is clearly an integer. Let n > 2. Then: FIXME: prove this
 
 2. Un = prod(s | n) Gs. To see this: FIXME: prove this
 
 -------------------------------------------------------------------------------------------------------------
 
+Lemma 4
+-------
+
+If Gn has an intrinsic prime factor p, then p is the largest prime factor of n. If n > 3, Gn is not divisible
+by p^2.
+
+Proof:
+------
+
+FIXME: Prove this.
+
+-------------------------------------------------------------------------------------------------------------
+
 FIXME: missing proof for Stormer's theorem.
----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 
 Finally, from OEIS A117581, the largest p-smooth number for p = 47 is 1109496723125. Thus,
 we can stop searching when we go over this value.
