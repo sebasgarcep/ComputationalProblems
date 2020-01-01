@@ -78,7 +78,7 @@ function main()
     result = 0
 
     max_i = 3
-    max_j = 2
+    max_j = 3
 
     count = 0
     limit = binomial(max_i + max_j, max_i)
