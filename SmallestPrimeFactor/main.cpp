@@ -172,7 +172,7 @@ Without caching this runs in 2 mins. It can be optimized further.
 #include <vector>
 
 // Problem parameters
-const long l = 1e11; // 1e12;
+const long l = 1e12;
 const long ms = 1e9;
 
 // Algorithm parameters
@@ -184,7 +184,7 @@ std::vector<long> prime_sums;
 
 long mod(long a, long b) {
     long r = a % b;
-    return r >= 0 ? r : r + std::abs(b);
+    return r >= 0 ? r : r + b;
 }
 
 long isqrt(long n) {
@@ -301,7 +301,7 @@ long meissel_lehmer_prime_counting(long x) {
 
 // if b | a, then (a/b) mod m = (a mod (m * b)) / b
 long sieve_sum(long x, long k) {
-    long quotient = x / k;
+    long quotient = mod(x / k, ms);
     long product = mod(quotient * (quotient + 1), 2 * ms);
     long numerator = mod(k * product, 2 * ms);
     return numerator >> 1;
@@ -314,13 +314,13 @@ long phi_prime_summation(long x, long a) {
     } else if (x <= primes[a - 1]) {
         return 1;
     } else if (a == 1) {
-        return sieve_sum(x, 1) - sieve_sum(x, 2);
+        return mod(sieve_sum(x, 1) - sieve_sum(x, 2), ms);
     } else if (a == 2) {
-        return sieve_sum(x, 1) - sieve_sum(x, 2) - sieve_sum(x, 3) + sieve_sum(x, 6);
+        return mod(sieve_sum(x, 1) - sieve_sum(x, 2) - sieve_sum(x, 3) + sieve_sum(x, 6), ms);
     }
     // Calculate for a = 3
-    long res = sieve_sum(x, 1) - sieve_sum(x, 2) - sieve_sum(x, 3) - sieve_sum(x, 5)
-        + sieve_sum(x, 6) + sieve_sum(x, 10) + sieve_sum(x, 15) - sieve_sum(x, 30);
+    long res = mod(sieve_sum(x, 1) - sieve_sum(x, 2) - sieve_sum(x, 3) - sieve_sum(x, 5)
+        + sieve_sum(x, 6) + sieve_sum(x, 10) + sieve_sum(x, 15) - sieve_sum(x, 30), ms);
     // Use recursion
     for (long i = 3; i <= a - 1; i += 1) {
         long p = primes[i];
