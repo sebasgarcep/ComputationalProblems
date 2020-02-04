@@ -1,7 +1,3 @@
-/*
-Approach:
-*/
-
 #include <chrono>
 #include <math.h>
 #include <stdio.h>

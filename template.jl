@@ -1,7 +1,3 @@
-#=
-Approach:
-=#
-
 using Printf
 
 function main()
