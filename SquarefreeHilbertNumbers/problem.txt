@@ -1,0 +1,4 @@
+A Hilbert number is any positive integer of the form 4k+1 for integer k≥0. We shall define a squarefree Hilbert number as a Hilbert number which is not divisible by the square of any Hilbert number other than one. For example, 117 is a squarefree Hilbert number, equaling 9×13. However 6237 is a Hilbert number that is not squarefree in this sense, as it is divisible by 92. The number 3969 is also not squarefree, as it is divisible by both 92 and 212.
+
+There are 2327192 squarefree Hilbert numbers below 107.
+How many squarefree Hilbert numbers are there below 1016?
