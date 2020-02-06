@@ -1,8 +1,6 @@
 #include <chrono>
 #include <math.h>
 #include <stdio.h>
-#include <thread>
-#include <vector>
 
 // Problem parameters
 
