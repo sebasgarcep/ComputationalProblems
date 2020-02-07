@@ -2,7 +2,7 @@
 
 # Definition: Admissible Number
 
-An admissible number is one whose distinct prime factors are the consecutive primes starting at 2 and ending at its largest prime factor. For example, 4 = 2^2, 30 = 2 * 3 * 5 are admissible numbers but 10 = 2 * 5 isn't, as 2 and 5 aren't consecutive, and 15 = 3 * 5 isn't as the prime factors do not start at 2.
+An admissible number is one whose distinct prime factors are the consecutive primes starting at $2$ and ending at its largest prime factor. For example, $4 = 2^2$, $30 = 2 * 3 * 5$ are admissible numbers but $10 = 2 * 5$ isn't, as $2$ and $5$ aren't consecutive, and $15 = 3 * 5$ isn't as the prime factors do not start at $2$.
 
 # Approach
 
