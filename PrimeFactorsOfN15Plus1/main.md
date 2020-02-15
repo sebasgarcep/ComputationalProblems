@@ -1,4 +1,4 @@
-# Prime Factors of $n^{15} + 1$ (FIXME: not finished yet)
+# Prime Factors of $n^{15} + 1$
 
 Let $p \leq m$ be a prime and let $x < p$, be an integer such that $x^{15} + 1 \equiv 0 \: (\text{mod} \: p)$. Then all numbers of the form $k p + x \leq n$ are divisible by $p$. Therefore our problem reduces to finding the roots of $x^{15} + 1$ modulo $p$.
 
@@ -48,15 +48,15 @@ Solving for these coefficients we get:
 $$c_1 \equiv x_1 \: (\text{mod} \: p)$$
 $$c_0 \equiv x_1^2 \: (\text{mod} \: p)$$
 
-Therefore we are looking to factor $x^2 + x_1 x + x_1^2$. Let $w = x_1$ if $x_1$ is even, and $w = x_1 + p$ otherwise. Thus, $w$ is even. Then:
+Therefore we are looking to factor $x^2 + x_1 x + x_1^2$. Let $v = x_1$ if $x_1$ is even, and $v = x_1 + p$ otherwise. Thus, $v$ is even. Then:
 
-$$x^2 + x_1 x + x_1^2 \equiv x^2 + w x + w^2 \equiv x^2 + w x + \frac{w^2}{4} - \frac{w^2}{4} + w^2 \: (\text{mod} \: p)$$
+$$x^2 + x_1 x + x_1^2 \equiv x^2 + v x + v^2 \equiv x^2 + v x + \frac{v^2}{4} - \frac{v^2}{4} + v^2 \: (\text{mod} \: p)$$
 
-$$x^2 + x_1 x + x_1^2 \equiv (x + w)^2 - \frac{w^2}{4} + w^2 \: (\text{mod} \: p)$$
+$$x^2 + x_1 x + x_1^2 \equiv (x + v)^2 - \frac{v^2}{4} + v^2 \: (\text{mod} \: p)$$
 
 Therefore, the roots of this quadratic satisfy:
 
-$$(x + w)^2 \equiv \frac{w^2}{4} - w^2 \equiv -3 \frac{w^2}{4} \: (\text{mod} \: p)$$
+$$(x + v)^2 \equiv \frac{v^2}{4} - v^2 \equiv -3 \frac{v^2}{4} \: (\text{mod} \: p)$$
 
 Thus, this only has solutions if there are square roots for $-3 \: (\text{mod} \: p)$. We will now prove that $-3$ is a quadratic nonresidue modulo primes of the form $p = 3p' + 2$.
 
@@ -165,13 +165,53 @@ The result arises from realizing that if $p \equiv 1 \: (\text{mod} \: 4)$ impli
 
 Using the previous results, $p \equiv 5, 11 \: (\text{mod} \: 12)$. If $p \equiv 5 \: (\text{mod} \: 12)$ then $3$ is a quadratic nonresidue and $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv 1 \: (\text{mod} \: p)$, thus $-1$ is a quadratic residue, and therefore $-3$ is a quadratic nonresidue. If $p \equiv 11 \: (\text{mod} \: 12)$ then $3$ is a quadratic residue and $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv -1 \: (\text{mod} \: p)$, thus $-1$ is a nonquadratic residue, and therefore $-3$ is a quadratic nonresidue.
 
-Now let $p \equiv 1 \: (\text{mod} \: 3)$. Suppose $x_1$ is a root of the polynomial. Then by setting $w$ just like before and by the same logic, the missing roots will be given by:
+Now let $p \equiv 1 \: (\text{mod} \: 3)$. Suppose $x_1$ is a root of the polynomial. Then by setting $v$ just like before and by the same logic, the missing roots will be given by:
 
-$$(x + w)^2 = -3 \frac{w^2}{4}$$
+$$(x + v)^2 = -3 \frac{v^2}{4}$$
 
-Which has roots if and only if $-3$ is a quadratic residue. If $p \equiv 1 \: (\text{mod} \: 12)$, then $3$ is a quadratic residue and $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv 1 \: (\text{mod} \: p)$, therefore $-3$ is a quadratic residue. Similarly, if $p \equiv 7 \: (\text{mod} \: 12)$, then $3$ is a quadratic nonresidue. But $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv -1 \: (\text{mod} \: p)$, and thus $-3$ is a quadratic residue. Therefore the cubic will either have no solutions, or three of them.
+Which has roots if and only if $-3$ is a quadratic residue. If $p \equiv 1 \: (\text{mod} \: 12)$, then $3$ is a quadratic residue and $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv 1 \: (\text{mod} \: p)$, therefore $-3$ is a quadratic residue. Similarly, if $p \equiv 7 \: (\text{mod} \: 12)$, then $3$ is a quadratic nonresidue. But $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv -1 \: (\text{mod} \: p)$, and thus $-3$ is a quadratic residue. Therefore the cubic will either have no solutions, or three of them. The following statement allows us to prove when this cubic is solvable, or equivalently, when $a$ is a cubic residue.
 
-FIXME: show how to find $x_1$, and use Tonelli-Shanks to solve for the other two roots.
+## $a$ is a cubic residue if and only if $a^{(p - 1) / 3} \equiv 1 \: (\text{mod} \: p)$.
+
+Let $g: x \rightarrow x^3$, where $g$ acts on $\mathbb{Z}_p^*$. Notice that $g(1) \equiv 1 \: (\text{mod} \: p)$. Therefore there are three values of $x$, for which $g(x) \equiv 1 \: (\text{mod} \: p)$. Thus $|\text{ker}(g)| = 3$. Thus, by the First Isomorphism theorem $|\text{im}(g)| = |\mathbb{Z}_p^*| / |\text{ker}(g)| = (p - 1) / 3$. Take $(p - 1) / 3$ distinct cubes, $a_1^3$, $a_2^3$, ..., $a_{(p - 1) / 3}^3$. Notice that these values satisfy the equation $a^{(p - 1) / 3} \equiv 1 \: (\text{mod} \: p)$, and that at most $(p - 1) / 3$ numbers can satisfy that equation. Thus the set of cubic residues is exactly the set of solutions to $a^{(p - 1) / 3} \equiv 1 \: (\text{mod} \: p)$.
+
+## Proof: Cubic Tonelli-Shanks
+
+Suppose $p \equiv 1 \: (\text{mod} \: 3)$, and $a$ is a cubic residue modulo $p$. Let $p - 1 = Q3^S$, where $Q \not\equiv 0 \: (\text{mod} \: 3)$. Note that if we try:
+
+$$R \equiv a^{(Q + 1) / 3} \: (\text{mod} \: p)$$
+
+Then:
+
+$$R^3 \equiv a^{Q + 1} \equiv a a^Q \: (\text{mod} \: p)$$
+
+Let $t \equiv a^Q \: (\text{mod} \: p)$. If $t \equiv 1 \: (\text{mod} \: p)$, then $R$ is the cubic root of $a$ and we are finished. Thus, let $t \not\equiv 1 \: (\text{mod} \: p)$. Then $t$ is a $3^{S - 1}$-th root of $1$ ($t^{3^{S - 1}} \equiv a^{Q3^{S - 1}} \equiv a^{(p - 1) / 3} \equiv 1 \: (\text{mod} \: p)$).
+
+The algorithm will then try to find values for $R'$, $t'$ such that $t'$ is a $3^{S - 2}$-th root of $1$, and the relation $R^3 \equiv at' \: (\text{mod} \: p)$ still holds. Notice that if we can repeat this procedure an arbitrary number of times, the value of the exponent of $3$ will reduce by one in each iteration, until we have found a $3^0$-th root of $1$, thus until $t' \equiv 1 \: (\text{mod} \: p)$, and thus $R'^3 \equiv a \: (\text{mod} \: p)$. That is, until $R'$ is a cubic root of $a$.
+
+If $t^{3^{S - 2}} \equiv 1 \: (\text{mod} \: p)$, then we only need to set $R' = R$, $t' = t$. Thus, suppose $t^{3^{S - 2}} \not\equiv 1 \: (\text{mod} \: p)$.
+
+Notice that if $w$ is a root of $x^3 - 1$, distinct from 1, then:
+
+$$(w^2)^3 - 1 \equiv ((w^3)^2 - 1 \equiv 1^2 - 1 \equiv 0 \: (\text{mod} \: p)$$.
+
+Thus the roots of $x^3 - 1$ are $1$, $w$, $w^2$.
+
+Now, because $t^{3^{S - 1}} \equiv 1 \: (\text{mod} \: p)$, then $t^{3^{S - 2}} \equiv w^e \: (\text{mod} \: p)$, where $e$ is either $1$ or $2$. To find $R'$, and $t'$, we have to multiply $R$ by a factor $b$. To mantain $R'^3 \equiv at' \: (\text{mod} \: p)$, we must multiply $t$ by $b^3$. Thus we need to find a value of $b$ such that $tb^3$ is a $3^{S - 2}$-th root of $1$. Suppose $t^{3^{S - 2}} \equiv w^e \: (\text{mod} \: p)$ and $z^{3^{S - 2}} \equiv w^f \: (\text{mod} \: p)$, for some $z$ such that $f = 1$, $2$. Then $b$ is either $z$ if $e + f \equiv 0 \: (\text{mod} \: 3)$ or $z^2$ if $e + 2f \equiv 0 \: (\text{mod} \: 3)$.
+
+To find an useful value of $z$, let $z$ be any cubic non-residue. Then $(z^Q)^{3^{S - 1}} \equiv z^{Q3^{S - 1}} \equiv z^{(p - 1) / 3} \equiv w^f \: (\text{mod} \: p)$, with $f \not= 0$.
+
+Finally, we would like to find arbitrary $3^{i + 1}$-th roots of $1$, such that the root we find is not a $3^i$-th root of $1$. Notice that:
+
+$$(z^{Q 3^{S - i - 1}})^{3^{i}} \equiv z^{Q 3^{S - 1}} \equiv z^{(p - 1) / 3} \equiv w^f \: (\text{mod} \: p)$$
+
+Thus $z^{Q 3^{S - i - 1}}$ serves this purpose.
+
+These observations lead to the following algorithm:
+
+## Algorithm: Cubic Tonelli-Shanks
+
+FIXME: write algorithm.
 
 ## Solving $x^5 \equiv -1 \: (\text{mod} \: p)$
 
