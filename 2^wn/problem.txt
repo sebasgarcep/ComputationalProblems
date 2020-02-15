@@ -1,0 +1,9 @@
+Let ω(n) denote the number of distinct prime divisors of a positive integer n.
+So ω(1)=0 and ω(360)=ω(23×32×5)=3.
+
+Let S(n) be Σd|n2ω(d).
+E.g. S(6)=2ω(1)+2ω(2)+2ω(3)+2ω(6)=20+21+21+22=9.
+
+Let F(n)=Σni=2S(i!). F(10)=4821.
+
+Find F(10000000). Give your answer modulo 1000000087.
