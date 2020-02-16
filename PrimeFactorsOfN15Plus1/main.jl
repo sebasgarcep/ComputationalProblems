@@ -1,4 +1,4 @@
-# FIXME: not finished yet.
+# FIXME: find mistake
 
 using Printf
 
@@ -136,6 +136,25 @@ function quadratic_mod(a, b, p)
     return x1, x2
 end
 
+function cubic_root_mod(a, p)
+    if a < 0 || a >= p
+        return cubic_root_mod(mod(a, p), p)
+    end
+    if p <= 3
+        return a, nothing, nothing
+    end
+    if mod(p, 3) == 2
+        return powermod(a, 2 * fld(p, 3) + 1, p), nothing, nothing
+    end
+    x1 = tonelli_shanks_cubic(a, p)
+    v = x1 & 1 == 0 ? x1 : x1 + p
+    d = v >> 1
+    y2, y3 = tonelli_shanks(p - 3, p)
+    x2 = mod(-d + y2 * d, p)
+    x3 = mod(-d + y3 * d, p)
+    return x1, x2, x3
+end
+
 function special_quintic(p)
     y, _ = tonelli_shanks(5, p)
     a = invmod(2, p) * (y - 1)
@@ -153,11 +172,62 @@ function main()
     result = 0
 
     # Problem parameters
+    n = 10^11
+    m = 10^8
 
     # Algorithm parameters
 
     # Solution
-    println(tonelli_shanks_cubic(7, 19))
+    primes = []
+    slots = [k & 1 == 1 for k in 1:m]
+    slots[1] = false
+    if m >= 2
+        push!(primes, 2)
+        slots[2] = true
+    end
+    for k in 3:2:m
+        if slots[k]
+            push!(primes, k)
+            for t in k^2:k:m
+                slots[t] = false
+            end
+        end
+    end
+
+    for p in primes
+        x_vals = []
+        if p == 2
+            push!(x_vals, 1)
+        elseif mod(p - 1, 30) == 0
+            y1, y2, y3, y4, y5 = special_quintic(p)
+            x1, x2, x3 = cubic_root_mod(y1, p)
+            push!(x_vals, x1, x2, x3)
+            x1, x2, x3 = cubic_root_mod(y2, p)
+            push!(x_vals, x1, x2, x3)
+            x1, x2, x3 = cubic_root_mod(y3, p)
+            push!(x_vals, x1, x2, x3)
+            x1, x2, x3 = cubic_root_mod(y4, p)
+            push!(x_vals, x1, x2, x3)
+            x1, x2, x3 = cubic_root_mod(y5, p)
+            push!(x_vals, x1, x2, x3)
+        elseif mod(p - 1, 10) == 0
+            x1, x2, x3, x4, x5 = special_quintic(p)
+            push!(x_vals, x1, x2, x3, x4, x5)
+        elseif mod(p - 1, 6) == 0
+            x1, x2, x3 = cubic_root_mod(p - 1, p)
+            push!(x_vals, x1, x2, x3)
+        else
+            push!(x_vals, p - 1)
+        end
+        for x in x_vals
+            if x === nothing
+                continue
+            end
+            if n >= x
+                result += fld(n - x, p) + 1
+            end
+        end
+    end
 
     # Show result
     println(result)

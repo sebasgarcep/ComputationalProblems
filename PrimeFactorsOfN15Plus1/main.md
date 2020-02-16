@@ -1,20 +1,8 @@
-# Prime Factors of $n^{15} + 1$
+# Prime Factors of $n^{15} + 1$ FIXME: find mistake
 
 Let $p \leq m$ be a prime and let $x < p$, be an integer such that $x^{15} + 1 \equiv 0 \: (\text{mod} \: p)$. Then all numbers of the form $k p + x \leq n$ are divisible by $p$. Therefore our problem reduces to finding the roots of $x^{15} + 1$ modulo $p$.
 
-If $p \leq 30$, then $p = 2, 3, 5, 7, 11, 13, 17, 23, 29$. In each case the solutions are:
-
-$$p = 2 \Rightarrow x = 1$$
-$$p = 3 \Rightarrow x = 2$$
-$$p = 5 \Rightarrow x = 4$$
-$$p = 7 \Rightarrow x = 3, 5, 6$$
-$$p = 11 \Rightarrow x = 2, 6, 7, 8, 10$$
-$$p = 13 \Rightarrow x = 4, 10, 12$$
-$$p = 17 \Rightarrow x = 16$$
-$$p = 23 \Rightarrow x = 22$$
-$$p = 29 \Rightarrow x = 28$$
-
-Assume now that $p > 30$. Any solution $x$ satisfies that $x^{30} \equiv 1 \: (\text{mod} \: p)$, thus the order of $x$ is either $2, 6, 10, 30$ (as the order of $x$ cannot divide $15$). If $2$ is the order of $x$, then $x^2 \equiv 1 \: (\text{mod} \: p)$ and thus $x \equiv \pm 1 \: (\text{mod} \: p)$. But $1^{15} + 1 \not\equiv 0 \: (\text{mod} \: p)$. Thus $x = -1$. Now, for there to be any solutions with orders $6, 10, 30$, these numbers must divide the order of $\mathbb{Z}_p^*$.
+If $p = 2$, then $x = 1$. Assume now that $p > 2$. Any solution $x$ satisfies that $x^{30} \equiv 1 \: (\text{mod} \: p)$, thus the order of $x$ is either $2, 6, 10, 30$ (as the order of $x$ cannot divide $15$). If $2$ is the order of $x$, then $x^2 \equiv 1 \: (\text{mod} \: p)$ and thus $x \equiv \pm 1 \: (\text{mod} \: p)$. But $1^{15} + 1 \not\equiv 0 \: (\text{mod} \: p)$. Thus $x = -1$. Now, for there to be any solutions with orders $6, 10, 30$, these numbers must divide the order of $\mathbb{Z}_p^*$.
 
 If only $6$ divides the order $\mathbb{Z}_p^*$, then we only need to find solutions to $x^3 + 1 \equiv 0 \: (\text{mod} \: p)$, as these solutions will also be roots of $x^{15} + 1$. Similarly, if only $10$ divides the order of $\mathbb{Z}_p^*$ then we only need to find solutions to $x^5 + 1 \equiv 0 \: (\text{mod} \: p)$. If $30$ divides the order of $\mathbb{Z}_p^*$, then we can substitute $y = x^3$ and solve $y^5 + 1 \equiv 0 \: (\text{mod} \: p)$. Then we have to solve for $x^3 \equiv y \: (\text{mod} \: p)$, to find all solutions.
 
@@ -51,12 +39,11 @@ $$c_0 \equiv x_1^2 \: (\text{mod} \: p)$$
 Therefore we are looking to factor $x^2 + x_1 x + x_1^2$. Let $v = x_1$ if $x_1$ is even, and $v = x_1 + p$ otherwise. Thus, $v$ is even. Then:
 
 $$x^2 + x_1 x + x_1^2 \equiv x^2 + v x + v^2 \equiv x^2 + v x + \frac{v^2}{4} - \frac{v^2}{4} + v^2 \: (\text{mod} \: p)$$
-
-$$x^2 + x_1 x + x_1^2 \equiv (x + v)^2 - \frac{v^2}{4} + v^2 \: (\text{mod} \: p)$$
+$$\equiv (x + \frac{v}{2})^2 - \frac{v^2}{4} + v^2 \: (\text{mod} \: p)$$
 
 Therefore, the roots of this quadratic satisfy:
 
-$$(x + v)^2 \equiv \frac{v^2}{4} - v^2 \equiv -3 \frac{v^2}{4} \: (\text{mod} \: p)$$
+$$(x + \frac{v}{2})^2 \equiv \frac{v^2}{4} - v^2 \equiv -3 \frac{v^2}{4} \: (\text{mod} \: p)$$
 
 Thus, this only has solutions if there are square roots for $-3 \: (\text{mod} \: p)$. We will now prove that $-3$ is a quadratic nonresidue modulo primes of the form $p = 3p' + 2$.
 
@@ -167,7 +154,7 @@ Using the previous results, $p \equiv 5, 11 \: (\text{mod} \: 12)$. If $p \equiv
 
 Now let $p \equiv 1 \: (\text{mod} \: 3)$. Suppose $x_1$ is a root of the polynomial. Then by setting $v$ just like before and by the same logic, the missing roots will be given by:
 
-$$(x + v)^2 = -3 \frac{v^2}{4}$$
+$$(x + \frac{v}{2})^2 = -3 \frac{v^2}{4}$$
 
 Which has roots if and only if $-3$ is a quadratic residue. If $p \equiv 1 \: (\text{mod} \: 12)$, then $3$ is a quadratic residue and $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv 1 \: (\text{mod} \: p)$, therefore $-3$ is a quadratic residue. Similarly, if $p \equiv 7 \: (\text{mod} \: 12)$, then $3$ is a quadratic nonresidue. But $(\frac{-1}{p}) \equiv (-1)^\frac{p - 1}{2} \equiv -1 \: (\text{mod} \: p)$, and thus $-3$ is a quadratic residue. Therefore the cubic will either have no solutions, or three of them. The following statement allows us to prove when this cubic is solvable, or equivalently, when $a$ is a cubic residue.
 
@@ -275,3 +262,20 @@ Thus there are always solutions for $a$ and thus for $c$ also. Therefore we can 
 $$x^2 + ax + b \equiv 0 \: (\text{mod} \: p)$$
 $$x^2 + ax + (2^{-1} a)^2 - (2^{-1} a)^2 + b \equiv  0\: (\text{mod} \: p)$$
 $$(x + 2^{-1} a)^2 \equiv (2^{-1} a)^2 - b \: (\text{mod} \: p)$$
+
+## Algorithm
+
+Let $N$ be the upper limit for the value of $n$. Then:
+
+1. $\text{acc} \leftarrow 0$.
+2. Find all primes up to $m$.
+3. For each prime $p$, if $p = 2$, then $x = 1$. Otherwise $p > 2$ and:
+
+- If $30 \: | \: p - 1$, solve $y^5 \equiv -1 \: (\text{mod} \: p)$. Then for each solution $y$, solve $x^3 \equiv y \: (\text{mod} \: p)$.
+- If $10 \: | \: p - 1$, solve $x^5 \equiv -1 \: (\text{mod} \: p)$.
+- If $6 \: | \: p - 1$, solve $x^3 \equiv -1 \: (\text{mod} \: p)$.
+- Else $2 \: | \: p - 1$, and thus $x = p - 1$.
+
+4. For each value of $x$, $(x + rp)^{15} + 1$ is divisble by $p$. Because $x + rp \leq N$, then $0 \leq r \leq \frac{N - x}{p}$.
+Thus we need to update $\text{acc} \leftarrow \text{acc} + \lfloor \frac{N - x}{p} \rfloor + 1$, if $N \geq x$.
+5. Return $\text{acc}$.
