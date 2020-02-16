@@ -1,4 +1,4 @@
-# Prime Factors of $n^{15} + 1$ FIXME: find mistake
+# Prime Factors of $n^{15} + 1$
 
 Let $p \leq m$ be a prime and let $x < p$, be an integer such that $x^{15} + 1 \equiv 0 \: (\text{mod} \: p)$. Then all numbers of the form $k p + x \leq n$ are divisible by $p$. Therefore our problem reduces to finding the roots of $x^{15} + 1$ modulo $p$.
 
@@ -277,5 +277,5 @@ Let $N$ be the upper limit for the value of $n$. Then:
 - Else $2 \: | \: p - 1$, and thus $x = p - 1$.
 
 4. For each value of $x$, $(x + rp)^{15} + 1$ is divisble by $p$. Because $x + rp \leq N$, then $0 \leq r \leq \frac{N - x}{p}$.
-Thus we need to update $\text{acc} \leftarrow \text{acc} + \lfloor \frac{N - x}{p} \rfloor + 1$, if $N \geq x$.
+Thus we need to update $\text{acc} \leftarrow \text{acc} + p \lfloor \frac{N - x}{p} \rfloor + 1$, if $N \geq x$.
 5. Return $\text{acc}$.

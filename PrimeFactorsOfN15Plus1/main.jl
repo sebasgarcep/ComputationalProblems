@@ -1,5 +1,3 @@
-# FIXME: find mistake
-
 using Printf
 
 function legendre(a, p)
@@ -224,7 +222,7 @@ function main()
                 continue
             end
             if n >= x
-                result += fld(n - x, p) + 1
+                result += p * (fld(n - x, p) + 1)
             end
         end
     end
