@@ -63,6 +63,63 @@ function tonelli_shanks(n, p)
     end
 end
 
+function cubic_residue(a, p)
+    return powermod(a, fld(p - 1, 3), p) == 1
+end
+
+function tonelli_shanks_cubic(a, p)
+    # Clean input variables
+    if a < 0 || a >= p
+        return tonelli_shanks(mod(a, p), p)
+    end
+    # Assert whether p = 1 (mod 3)
+    if mod(p, 3) != 1
+        return nothing
+    end
+    # Assert whether a is a cubic residue
+    if !cubic_residue(a, p)
+        return nothing
+    end
+    # Find the non-residue z
+    z = 2
+    while cubic_residue(z, p)
+        z += 1
+    end
+    # Factor p - 1
+    s = 0
+    q = p - 1
+    while mod(q, 3) == 0
+        q = fld(q, 3)
+        s += 1
+    end
+    # Initialize variables
+    m = s
+    c = powermod(z, q, p)
+    w = powermod(c, 3^(s - 1), p)
+    t = powermod(a, q, p)
+    r = powermod(a, fld(q + 1, 3), p)
+    # Loop
+    while t != 1
+        t_prev, t_curr = 1, t
+        i = 0
+        while t_curr != 1
+            t_prev, t_curr = t_curr, mod(t_curr^3, p)
+            i += 1
+        end
+        if t_prev == w
+            b = powermod(c, 2 * 3^(m - i - 1), p)
+        else
+            b = powermod(c, 3^(m - i - 1), p)
+        end
+        b3 = powermod(b, 3, p)
+        t = mod(t * b3, p)
+        r = mod(r * b, p)
+        c = b3
+        m = i
+    end
+    return r
+end
+
 function quadratic_mod(a, b, p)
     d = invmod(2, p) * a
     d = mod(d, p)
@@ -100,6 +157,7 @@ function main()
     # Algorithm parameters
 
     # Solution
+    println(tonelli_shanks_cubic(7, 19))
 
     # Show result
     println(result)

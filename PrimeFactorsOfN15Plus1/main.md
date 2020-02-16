@@ -207,11 +207,30 @@ $$(z^{Q 3^{S - i - 1}})^{3^{i}} \equiv z^{Q 3^{S - 1}} \equiv z^{(p - 1) / 3} \e
 
 Thus $z^{Q 3^{S - i - 1}}$ serves this purpose.
 
+Finally, because in each iteration $i$ (the smallest number for which $t^{3^i} \equiv 1 \: (\text{mod} \: p)$) is smaller, then $S - i - 1$, becomes larger. We can therefore use a variable $M$ to store the latest value of $i$ we have found (or $S$ in the first iteration). Notice that $0 < i < M$. Therefore $(z^Q)^{3^{S - i - 1}} = ((z^Q)^{3^{S - M + M - i - 1}} = ((z^Q)^{3^{S - M}})^{3^{M - i - 1}}$. Therefore on each iteration we can store $(z^Q)^{3^{M - i}}$, as $M$ will take the place of $S$ (upper limit for $i$) in each iteration, and $i$ will take the place of $M$ (after assignment) in each iteration.
+
 These observations lead to the following algorithm:
 
 ## Algorithm: Cubic Tonelli-Shanks
 
-FIXME: write algorithm.
+Given prime $p \equiv 1 \: (\text{mod} \: 3)$, and a cubic residue $a$:
+
+1. Find a cubic non-residue $z$.
+2. Factor $p - 1 = Q3^S$.
+3. Let
+
+$$M \leftarrow S$$
+$$c \leftarrow z^Q$$
+$$w \leftarrow c^{3^{S - 1}}$$
+$$t \leftarrow a^Q$$
+$$R \leftarrow a^{(Q + 1) / 3}$$
+
+4. Loop:
+- If $t \equiv 0 \: (\text{mod} \: p)$ return $r = 0$.
+- If $t \equiv 1 \: (\text{mod} \: p)$ return $r = R$.
+- Otherwise find the least $i$, $0 < i < M$, such that $t^{3^i} \equiv 1 \: (\text{mod} \: p)$.
+- If $t^{3^{i - 1}} \equiv w \: (\text{mod} \: p)$, then $b \leftarrow (c^{3^{M - i - 1}})^2$. Otherwise $b \leftarrow c^{3^{M - i - 1}}$.
+- Set $t \leftarrow tb^3$, $R \leftarrow Rb$, $c \leftarrow b^3$, $M \leftarrow i$.
 
 ## Solving $x^5 \equiv -1 \: (\text{mod} \: p)$
 
