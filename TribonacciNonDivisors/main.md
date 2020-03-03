@@ -1,0 +1,3 @@
+# Tribonacci non-divisors
+
+For each odd number $m$, starting at $27$, recursively generate the Tribonacci sequence modulo $m$. Thus if we find a member of the sequence that equals $0$ modulo $m$, we know the sequence is divisible by $m$. Thus, at each step save the last triple of elements found. If we ever encounter the same triple again then the sequence loops (and after a finite amount of steps we should find it as $\mathbb{Z_m}$ is finite and thus the amount of distinct triples is also finite). If we encounter the beginning of the loop again and we haven't found a $0$, then the sequence is not divisble by $m$.
