@@ -470,8 +470,10 @@ Hence
 
 | Gn | = prod(h coprime to n) | a - b * e^(2 * pi * i * h / n) | > (a - b)^phi(n) = (2 * y1 * sqrt(D))^phi(n) > 2^(pt - 1) >= p^t.
 
-Therefore, by Lemma 4, Gn has an extrinsic prime factor p*. Let w = w(p*) be the rank of apparition of p*. Since p* divides
-Gn and hence Un, w divides n. Suppose, if possible, that w < n, so that Gn divides the integer
+By Lemma 4, Gn can be divides by at most p, but because Gn > p^t >= p, it must have at least another prime factor. By
+Lemma 4, Gn can only have one intrinsic prime factor, therefore Gn has an extrinsic prime factor p*. Let w = w(p*) be
+the rank of apparition of p*. Since p* divides Gn and hence Un, w divides n. Suppose, if possible, that w < n, so that
+Gn divides the integer
 
 Un / Uw = prod(s | n, s does not divide w) Gs
 
