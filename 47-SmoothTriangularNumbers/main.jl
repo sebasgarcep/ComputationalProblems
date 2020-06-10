@@ -310,6 +310,29 @@ the highest power of p that can divide U(k * m * p^l) is p^(a + l).
 
 -------------------------------------------------------------------------------------------------------------
 
+Definition (Galois conjugate)
+-----------------------------
+
+The Galois conjugates of a from a field K are the roots of the minimal polynomial of a in a field F contained in K.
+
+Definition (Algebraic integers)
+-------------------------------
+
+Let K be a finite field extension of Q. Let a belong to K. Then a is an algebraic integer if there exists a monic
+polynomial f(x) in Z[x] such that f(a) = 0.
+
+Proposition
+-----------
+
+If an algebraic integer is rational, then it is also an integer.
+
+Proof:
+------
+
+Let a be a rational, algebraic integer. By the rational root test a = p/q where p and q are coprime, p is an integer
+factor of the constant term of the polynomial and q is a factor of the leading term of the polynomial. But the leading
+term of the polynomial is 1. Therefore q = 1 and a is an integer.
+
 Definition
 ----------
 
@@ -326,25 +349,26 @@ Corollaries:
 1. Gn is an integer. To see this notice that:
 
 a. Gn is symmetric with respect to a and b. If n = 2, then G2 = a + b = b + a. If n > 2, then, letting
-s = e^(2 * pi * i / n) and Gn' be the sequence where a and b are swapped around, we get:
+w(n) = e^(2 * pi * i / n) (if n is clear we will just write w = w(n)) and Gn' be the sequence where a and b are swapped
+around, we get:
 
-Gn = prod(h = 1, n - 1, h coprime to n) (a - b * s^h)
-   = prod(h = 1, n - 1, h coprime to n) (a - b * s^h) * -s^(n - h) / -s^(n - h)
-   = prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) / -s^(n - h)
-   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) -s^(n - h) ]
-   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ (-1)^phi(n) * prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
+Gn = prod(h = 1, n - 1, h coprime to n) (a - b * w^h)
+   = prod(h = 1, n - 1, h coprime to n) (a - b * w^h) * -w^(n - h) / -w^(n - h)
+   = prod(h = 1, n - 1, h coprime to n) (b - a * w^(n - h)) / -w^(n - h)
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * w^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) -w^(n - h) ]
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * w^(n - h)) ] / [ (-1)^phi(n) * prod(h = 1, n - 1, h coprime to n) w^(n - h) ]
 
 Notice that phi(n) is even for n > 2, thus:
 
-Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
+Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * w^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) w^(n - h) ]
 
 Notice also that a product over n - h can be swapped around into a product over h as there is a one-to-one mapping
 between n - h and h, as both are coprime or both aren't. Thus:
 
-Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) s^(n - h) ]
-   = [ prod(h = 1, n - 1, h coprime to n) (b - a * s^h) ] / [ prod(h = 1, n - 1, h coprime to n) s^h ]
-   = Gn' / [ prod(h = 1, n - 1, h coprime to n) s^h ]
-   = Gn' / s^( sum( h = 1, n - 1, h coprime to n ) h )
+Gn = [ prod(h = 1, n - 1, h coprime to n) (b - a * w^(n - h)) ] / [ prod(h = 1, n - 1, h coprime to n) w^(n - h) ]
+   = [ prod(h = 1, n - 1, h coprime to n) (b - a * w^h) ] / [ prod(h = 1, n - 1, h coprime to n) w^h ]
+   = Gn' / [ prod(h = 1, n - 1, h coprime to n) w^h ]
+   = Gn' / w^( sum( h = 1, n - 1, h coprime to n ) h )
 
 We claim that sum( h = 1, n - 1, h coprime to n ) h is a multiple of n and thus the denominator equals 1. To see
 this notice that:
@@ -355,14 +379,49 @@ sum( h = 1, n - 1, h coprime to n ) h = sum( h = 1, n - 1, h coprime to n ) n - 
 2 * sum( h = 1, n - 1, h coprime to n ) h = n * phi(n)
 sum( h = 1, n - 1, h coprime to n ) h = n * phi(n) / 2
 
-b. It is clear that Gn = prod(h = 1, n - 1, h coprime to n) (a - b * s^pi(h)) where pi is a permutation function
-over the possible values of h. Thus Gn is said to be symmetric with respect to the roots of unity.
+b. It is clear that if you reorder the primitive roots of unity in Gn = prod(h = 1, n - 1, h coprime to n) (a - b * w^pi(h))
+you still get Gn. Therefore Gn is symmetric with respect to the primitive roots of unity.
 
-c. If n = 2, then Gn is clearly an integer. Let n > 2. Then: FIXME: prove this
+c. First, Notice that Gn is in Q(sqrt(D), w). Also a and b are Galois conjugates of each other. Therefore, any field
+homomorphism f: Q(sqrt(D), w) -> C will at most map one onto the other. Also, the primitive roots of unity are Galois
+conjugates of each other, so any field homomorphism will map one unto the others (notice that the non-primitive elements
+have a minimal polynomial of lesser degree, therefore they are not Galois conjugates of these elements, and thus we don't
+have to worry about them being in the image of the field homomorphism).
 
-2. Un = prod(s | n) Gs. To see this: FIXME: prove this
+Since any field homomorphism will only permute a with b, and the primitive roots of unity with each other, and since Gn is
+symmetric with respect to these two possible permutations, Gn is fixed by any field homomorphism. But any field homomorphism
+is defined by the mappings of the generators 1, sqrt(D), w. Therefore Gn can only be fixed if it is in the subfield generated
+by 1, which is Q. Therefore Gn is rational.
+
+Moreover Gn is an algebraic integer as algebraic integers are closed under addition and multiplication. But this implies
+Gn is an integer by a previous proposition.
+
+2. Un = prod(s | n) Gs. Clearly, the roots of x^n - b^n are b * w^k, for 0 <= k < n, therefore:
+
+x^n - b^n = prod(k = 0, n - 1) (x - b * w^k).
+
+Substituting a into x and dividing by a - b we get (a^n - b^n) / (a - b) = prod(k = 1, n - 1) (a - b * w^k).
+
+Let a - b * w^k, with 0 < k < n. Suppose w / n = w' / n', in simplest terms. Then a - b * w^k | Gn'. Because all a - b * w^k
+are different for different k, we get that Un | prod(s | n) Gs. Now let s | n. Then:
+
+Gs = prod(k = 1, s, k coprime to s) a - b * w(s)^k
+   = prod(k = 1, s, k coprime to s) a - b * w^(k * m / s)
+
+Now we need to ask whether the factor a - b * w^(k * m / s) can appear more than once. Clearly, all factors of Gs are different,
+so it cannot repeat itself in the same Gs. Assume that the factor repeats itself in some other Gs. Therefore there is another
+pair k', s' such that k' is coprime to s', 0 < k' < s', and k * m / s = k' * m / s' (This is clear from the fact that 0 < k < s
+implies 0 < k * m / s < m and similarly 0 < k' * m / s' < m). Then k / s = k' / s'. But because k and s are coprime they are in
+simpliest terms. Similarly, k' and s' are coprime. Therefore they are simplest terms too. This implies k = k' and s = s', which
+is a contradiction. Therefore no term repeats more than once, and since Un has all possible a - b * w^k, except for k = 0 which
+is not in any Gs, Un = prod(s | n) Gs.
 
 -------------------------------------------------------------------------------------------------------------
+
+Definition
+----------
+
+A prime factor of Gn which divides n is called intrinsic. The other prime factors of Gn are called extrinsic.
 
 Lemma 4
 -------
@@ -373,11 +432,90 @@ by p^2.
 Proof:
 ------
 
-FIXME: Prove this.
+Let d be the greatest common divisor of Gn and n. If d = 1, there is nothing to prove. If d > 1, let p be any prime factor
+of d, and let w = w(p) be the rank of apparition of p in the sequence U. Since p divides Gn and hence Un, it follows that
+w divides n. Let
 
--------------------------------------------------------------------------------------------------------------
+n = k * w * p^l (l >= 0, p | k)
 
-FIXME: missing proof for Stormer's theorem.
+We first show that k = 1. In fact if k > 1, the integer
+
+Un / Un/k = prod(s | n, s does not divide n / k) Gs
+
+is divisible by Gn and hence by p. But by the Law of Repetition, Un / Un/k is not divisible by p. Hence k = 1, and
+
+n = wp^l
+
+By Lemma 1, p >= w (either w = p or w <= (p - e) / 2 <= p). Thus p is the largest prime factor of n. It remains to show
+that if n > 3, Gn is not divisible by p^2. Suppose the contrary, and suppose that l > 0. Then the ratio
+
+Uwp^l / Uwp^(l-1)
+
+would be divisible by Gn and hency by p^2. But the Law of Repetition forbids this. Hence l = 0 and n = w. Since p | n,
+p <= w. But p >= w. Hence p = w = n > 3. By Lemma 2, Gn = Gp = Up is not divisible by p^2. This establishes the lemma.
+
+Lemma 5
+-------
+
+If n > 3, yn is divisible by a prime >= 2n - 1.
+
+Proof:
+------
+
+Let n = prod(j = 1, t) pj^aj be the factorization of n into its prime factors of which the prime pt is the largest. Then:
+
+phi(n) = prod(j = 1, t) pj^(aj - 1) * (pj - 1)
+
+Hence
+
+| Gn | = prod(h coprime to n) | a - b * e^(2 * pi * i * h / n) | > (a - b)^phi(n) = (2 * y1 * sqrt(D))^phi(n) > 2^(pt - 1) >= p^t.
+
+Therefore, by Lemma 4, Gn has an extrinsic prime factor p*. Let w = w(p*) be the rank of apparition of p*. Since p* divides
+Gn and hence Un, w divides n. Suppose, if possible, that w < n, so that Gn divides the integer
+
+Un / Uw = prod(s | n, s does not divide w) Gs
+
+Then p* divides this ratio. But p* being extrinsic, does not divide n or w and so, by Lemma 3, Un / Uw is not divisible
+by p*. This contradiction prove that w = n. But then p* != w since p* does not divide n. Therefore by Lemma 1, w, and
+hence n, divides 1/2 * (p* +- 1). Thus p* >= 2n - 1. But p* divides Gn, which divides Un, which in turn divides yn = Un * y1.
+This proves the lemma.
+
+Lehmer's method
+---------------
+
+Let 2 = q1 < q2 < ... < qt be a given set of t primes. Let Q be the set of numbers of the form q1^a1 * q2^a2 * ... * qt^at
+and let Q' be the subset of all 2^t - 1 square-free members of Q with the exception of 2. Let S be an integer such that
+both S and S+1 belongs to Q. Then S = (xn - 1) / 2 where (xn, yn) is a solution of the Pell equation
+
+x^2 - 2 * D * y^2 = 1 (12)
+
+in which
+
+D belongs to Q', 1 <= n <= M = max(3, (qt + 1) / 2), yn belongs to Q (13)
+
+Conversely, if (xn, yn) is a solution of (12) subject to conditions (13), then S = (xn - 1) / 2 and S+1 both belong to Q.
+
+Proof:
+------
+
+Suppose first that (xn, yn) satisfies (12) and (13). Then, since xn is odd and yn is even,
+
+S * (S+1) = (xn^2 - 1) / 4 = 2 * D * (yn / 2)^2 belongs to Q.
+
+On the other hand, suppose that S(S + 1) belongs to Q, so that
+
+S * (S + 1) = 2 * q1^a1 * q2^a2 * ... * qt^at
+
+where ai = ei + 2bi, ei = 0, 1. Furthermore let x = 2 * S + 1, y = 2 * q1^b1 * q2^b2 * ... * qt^bt, D = q1^e1 * q2^e2 * ... * qt^et.
+Then:
+
+4 * S * (S + 1) = 4 * S^2 + 4 * S = x^2 - 1 = 2 * D * y^2
+
+Hence each S leads to some solution (x, y) of (12) in which y and D belong to Q and Q' respectively. It remains to show
+that n <= M. Suppose, instead, that n > M. Applying the Lemma 5 we conclude that yn is divisible by a prime p such that
+p >= 2n - 1 > 2M - 1 >= qt. Hence yn is not a member of Q, as it is divisible by a prime larger than the largest prime
+in Q. By contradiction we get n <= M, which implies the finiteness of the possible solution space.
+
 -------------------------------------------------------------------------------------------------------------
 
 Finally, from OEIS A117581, the largest p-smooth number for p = 47 is 1109496723125. Thus,
