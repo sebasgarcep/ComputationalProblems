@@ -62,12 +62,12 @@ pk+1/qk+1 = ((ak + 1 / ak+1) * pk-1 + pk-2) / ((ak + 1 / ak+1) * qk-1 + qk-2)
           = (ak+1 * (ak * pk-1 + pk-2) + pk-1) / (ak+1 * (ak * qk-1 + qk-2) + qk-1)
           = (ak+1 * pk + pk-1) / (ak+1 * qk + qk-1)
 
-Now let's prove that qk * pk-1 - pk * qk-1 = (-1)^k-1:
+Now let's prove that qk * pk-1 - pk * qk-1 = (-1)^k:
 
 Notice that for the case k = 1 the statement is true:
 
 q1 * p0 - p1 * q0 = a1 * a0 - (a1 * a0 + 1) * 1
-                  = 1
+                  = - 1
 
 Now assume that the statement is true for k, k-1, k-2, etc. Then:
 
@@ -75,8 +75,8 @@ qk+1 * pk - pk+1 * qk = (ak+1 * qk + qk-1) * pk - (ak+1 * pk + pk-1) * qk
                       = ak+1 * pk * qk + pk * qk-1 - ak+1 * pk * qk - qk * pk-1
                       = pk * qk-1 - qk * pk-1
                       = -1 * (qk * pk-1 - pk * qk-1)
-                      = -1 * (-1)^k-1
-                      = (-1)^k
+                      = -1 * (-1)^k
+                      = (-1)^(k+1)
 
 Now we will prove that if pk/qk is a convergent of sqrt(D), and k is the smallest
 integer such that pk^2 - D * qk^2 = 1, then (pk, qk) is the minimal solution for
