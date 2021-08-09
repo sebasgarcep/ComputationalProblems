@@ -147,8 +147,6 @@ long q(long x) {
 long s(long x);
 long s_d(long min_a, long d, long x);
 
-// FIXME: Memoize small values of this function with a vector
-// larger values use a map
 long s(long x) {
     if (x <= 0) { return 0; }
     if (x <= bound) { return s_memo[x - 1]; }
