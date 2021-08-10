@@ -8,19 +8,15 @@
 const long n = 5e15;
 
 // Algorithm parameters
-const long bound = 1e8; // (long) sqrt(n);
+const long bound = 1e8;
 
 // Static variables
 std::vector<long> s_memo = {};
 std::map<long, long> s_cache;
+std::vector<long> special_primes = {};
 std::vector<long> mu_memo = {};
-std::vector<long> gamma_memo = {};
-std::vector<std::vector<long>> primes_memo = {};
+std::vector<long> totient_memo = {};
 std::vector<std::vector<long>> divisors_memo = {};
-
-std::vector<long> primes(long x) {
-    return primes_memo[x - 1];
-}
 
 std::vector<long> divisors(long x) {
     return divisors_memo[x - 1];
@@ -30,8 +26,8 @@ long mu(long x) {
     return mu_memo[x - 1];
 }
 
-long gamma(long x) {
-    return gamma_memo[x - 1];
+long totient(long x) {
+    return totient_memo[x - 1];
 }
 
 void init() {
@@ -47,19 +43,14 @@ void init() {
         mu_memo[x - 1] = 1;
     }
 
-    gamma_memo.reserve(bound);
+    totient_memo.reserve(bound);
     for (long x = 1; x <= bound; x += 1) {
-        gamma_memo[x - 1] = 1;
+        totient_memo[x - 1] = 1;
     }
 
     divisors_memo.reserve(bound);
     for (long x = 1; x <= bound; x += 1) {
         divisors_memo[x - 1] = { 1 };
-    }
-
-    primes_memo.reserve(bound);
-    for (long x = 1; x <= bound; x += 1) {
-        primes_memo[x - 1] = {};
     }
 
     // Sieve
@@ -87,6 +78,10 @@ void init() {
                 slots[k - 1] = false;
             }
 
+            if (gamma_p != 0) {
+                special_primes.push_back(p);
+            }
+
             for (long k = p; k <= bound; k += p) {
                 // Calculate values of s_partial
                 if (gamma_p == 0) {
@@ -104,10 +99,8 @@ void init() {
                 }
                 // Calculate values of mu
                 mu_memo[k - 1] *= -1;
-                // Calculate values of gamma
-                gamma_memo[k - 1] *= gamma_p;
-                // Calculate primes
-                primes_memo[k - 1].push_back(p);
+                // Calculate values of totient
+                totient_memo[k - 1] *= p - 1;
                 // Calculate divisors
                 long max_u = divisors_memo[k - 1].size();
                 for (long u = 1; u <= max_u; u += 1) {
@@ -118,6 +111,8 @@ void init() {
             for (long k = p * p; k <= bound; k += p * p) {
                 // Calculate values of mu
                 mu_memo[k - 1] = 0;
+                // Ignore totient of squarefull numbers
+                totient_memo[k - 1] = 0;
                 // Ignore divisors of squarefull numbers
                 divisors_memo[k - 1] = {};
             }
@@ -145,7 +140,9 @@ long q(long x) {
 
 // Declarations
 long s(long x);
-long s_d(long min_a, long d, long x);
+long s_d_edge(long d, long x);
+long s_d_2_edge(long d, long x);
+long s_d_2_special(long special, long d, long x);
 
 long s(long x) {
     if (x <= 0) { return 0; }
@@ -156,79 +153,79 @@ long s(long x) {
     long max_d = (long) sqrt(x);
     for (long d = 2; d <= max_d; d += 1) {
         long mu_d = mu(d);
-        if (mu_d != 0) { result -= mu(d) * s_d(2, d, x);}
+        if (mu_d == 0) { continue; }
+        long special = 1;
+        long d_rem = d;
+        long max_pos = special_primes.size();
+        for (long pos = 0; pos < max_pos; pos += 1) {
+            long divisor = special_primes[pos];
+            if (d_rem % divisor == 0) {
+                special *= divisor * divisor;
+                d_rem /= divisor;
+            }
+        }
+        result -= mu(d) * s_d_2_special(special, d_rem, x);
     }
     s_cache[x] = result;
     return result;
 }
 
-long s_d_term_1_aux(
-    std::vector<long> prime_list,
-    long min_a,
-    long d,
-    long x,
-    long pos,
-    long acc_reduced,
-    long acc_total
-) {
-    long result = 0;
-
-    if (pos >= prime_list.size()) {
-        long argument = x / acc_total;
-        std::vector<long> divisor_list = divisors(d);
-        long max_idx = divisor_list.size();
-        for (long idx = 0; idx < max_idx; idx += 1) {
-            long u = divisor_list[idx];
-            result += mu(u) * s_d(1, u, argument);
-        }
-
-        result *= acc_reduced;
-        return result;
-    }
-
-    long p = prime_list[pos];
-
-    long next_pos = pos + 1;
-    long next_acc_reduced = acc_reduced;
-    for (long i = 1; i <= min_a - 1; i += 1) { next_acc_reduced *= p; }
-    long next_acc_total = acc_total;
-    for (long i = 1; i <= min_a; i += 1) { next_acc_total *= p; }
-
-    for (long a = min_a; a <= p - 1; a += 1) {
-        if (next_acc_total > x) { break; }
-        result += s_d_term_1_aux(prime_list, min_a, d, x, next_pos, next_acc_reduced, next_acc_total);
-        next_acc_reduced *= p;
-        next_acc_total *= p;
-    }
-
-    return result;
-}
-
-long s_d_term_1(long min_a, long d, long x) {
-    std::vector<long> prime_list = primes(d);
-    return s_d_term_1_aux(prime_list, min_a, d, x, 0, 1, 1);
-}
-
-long s_d_term_2(long min_a, long d, long x) {
-    long result = 0;
-    std::vector<long> divisor_list = divisors(d);
-    long max_pos = divisor_list.size();
-    for (long pos = 2; pos <= max_pos; pos += 1) {
-        long u = divisor_list[pos - 1];
-        long gamma_u = gamma(u);
-        if (gamma_u == 0) { continue; }
-        result += mu(u) * gamma_u * s_d(min_a, d / u, x / gamma_u);
-    }
-    return result;
-}
-
-long s_d(long min_a, long d, long x) {
+long s_d_edge(long d, long x) {
     if (x <= 0 || d > x) { return 0; }
     if (d == 1) { return s(x); }
-    if (min_a == 2 && d % 2 == 0) { return 4 * s_d(min_a, d / 2, x / 4); }
     long result = 0;
-    result += s_d_term_1(min_a, d, x);
-    result -= s_d_term_2(min_a, d, x);
+    long argument = x / d;
+    std::vector<long> divisor_list = divisors(d);
+    long max_idx = divisor_list.size();
+    for (long idx = 0; idx < max_idx; idx += 1) {
+        long u = divisor_list[idx];
+        result += totient(u) * s_d_edge(u, argument);
+    }
+    return result;
+}
+
+long s_d_2_edge(long d, long x) {
+    if (x <= 0 || d > x) { return 0; }
+    if (d == 1) { return s(x); }
+    return d * s_d_edge(d, x / d);
+}
+
+long s_d_2_special(long special, long d, long x) {
+    if (x < special * d * d) { return 0; }
+    if (special == 1) { return s_d_2_edge(d, x); }
+    if (special % 4 == 0) { return 4 * s_d_2_special(special / 4, d, x / 4); }
+    
+    long p = 0;
+    long max_pos = special_primes.size();
+    for (long pos = 0; pos < max_pos; pos += 1) {
+        long divisor = special_primes[pos];
+        if (special % divisor == 0) {
+            p = divisor;
+            break;
+        }
+    }
+
+    long p_2 = p * p;
+    long p_2_mod = special % p_2;
+    long power = p_2_mod == 0 ? 2 : 1;
+    long acc_mult = p_2_mod == 0 ? p : 1;
+    long acc_divi = p_2_mod == 0 ? p_2 : p;
+    long next_special = special / acc_divi;
+
+    long result = 0;
+
+    for (long a = power; a <= p - 1; a += 1) {
+        if (acc_divi > x) { break; }
+        long term = s_d_2_special(next_special, d, x / acc_divi) - s_d_2_special(p * next_special, d, x / acc_divi);
+        result += acc_mult * term;
+        acc_mult *= p;
+        acc_divi *= p;
+    }
+
+    if (acc_divi <= x) {
+        result += acc_divi * s_d_2_special(next_special, d, x / acc_divi);
+    }
+
     return result;
 }
 
@@ -244,7 +241,7 @@ int main() {
 
     // Solution
     init();
-    result = s(n);
+    result = s(n) - 1;
 
     // Show result
     printf("%ld\n", result);
