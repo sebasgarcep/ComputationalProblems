@@ -27,14 +27,14 @@ function main()
     for a in 1:(limit - 1)
         k = fld(a, 3) + 1
         n = (a + k) * (3 * k - a)
-        while n <= limit
+        while n <= (limit - 1)
             num_sols[n] += 1
             k += 1
             n = (a + k) * (3 * k - a)
         end
     end
 
-    for n in 1:limit
+    for n in 1:(limit - 1)
         if num_sols[n] == 1
             result += 1
         end
