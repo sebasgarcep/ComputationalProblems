@@ -16,17 +16,17 @@ Thus, we need to prove that for the number 2, or odd primes of the form $4k + 1$
 
 ## Theorem: Fermat's Two Squares Theorem
 
-A prime number $p$ can be represented as the sum of two nonzero squares if and only if $p = 2$ or $p \equiv 1 \: (\text{mod} \: 4)$; and this representation is unique.
+A prime number $p$ can be represented uniquely as the sum of two nonzero squares if and only if $p = 2$ or $p \equiv 1 \: (\text{mod} \: 4)$.
 
 ### Proof:
 
-$\Leftarrow]$ The squares $(\text{mod} \: 4)$ are either $0$ or $1$. Therefore, if $p$ is a sum of squares, then $p = 0, 1, 2 \: (\text{mod} \: 4)$. But if $p = 0, 2 \: (\text{mod} \: 4)$, then $p$ is even, thus $p = 2$.
+$\Rightarrow]$ The squares $(\text{mod} \: 4)$ are either $0$ or $1$. Therefore, if $p$ is a sum of squares, then $p = 0, 1, 2 \: (\text{mod} \: 4)$. But if $p = 0, 2 \: (\text{mod} \: 4)$, then $p$ is even, thus $p = 2$.
 
-$\Rightarrow]$ Clearly $p = 2 = 1^2 + 1^2$. Thus, assume $p = 1 \: (\text{mod} \: 4)$. Notice that $p = a^2 + b^2 = (a + i b) (a - i b)$. Therefore if there are no integer solutions to the sum of squares problem, then $p$ is a Gaussian prime. Thus $(p)$ is a prime ideal, and because $Z[i]$ is an Euclidean Domain, and thus a PID, $(p)$ must be maximal. Thus $Z[i] / (p)$ is a commutative field.
+$\Leftarrow]$ Clearly $p = 2 = 1^2 + 1^2$. Thus, assume $p = 1 \: (\text{mod} \: 4)$. Notice that $p = a^2 + b^2 = (a + i b) (a - i b)$. Therefore if there are no integer solutions to the sum of squares problem, then $p$ is a Gaussian prime. Thus $(p)$ is a prime ideal, and because $Z[i]$ is an Euclidean Domain, and thus a PID, $(p)$ must be maximal. Thus $Z[i] / (p)$ is a commutative field.
 
 Let's prove that there is some $x \in Z_p$ such that $x^2 = -1 \: (\text{mod} \: p)$. Clearly $x^{p - 1} = 1 \: (\text{mod} \: p)$, thus $(x^\frac{p - 1}{2} - 1)(x^\frac{p - 1}{2} + 1) \equiv 0 \: (\text{mod} \: p)$. The left term can have at most $\frac{p - 1}{2}$ solutions, thus there is some solution to $x^\frac{p - 1}{2} + 1 \equiv 0 \: (\text{mod} \: p)$. But $p = 4k + 1$, for some integer $k$. Therefore $x^{2k} \equiv (x^k)^2 \equiv -1 \: (\text{mod} \: p)$.
 
-Therefore the polynomial $x^2 + 1$ has roots $x$, $-x$, $i$, $-i$, which is a contradiction. Thus $p$ must have at least one integer solution to the sum of squares problem.
+Therefore the polynomial $x^2 + 1$ has roots $x^k$, $-x^k$, $i$, $-i$, which is a contradiction. Thus $p$ must have at least one integer solution to the sum of squares problem.
 
 Finally, the uniqueness is given by the UFD property of $Z[i]$, as multiplication by units only changes the sign or the order of the factorization of a respective solution, and the factors of $p$ are prime, as their norm is prime (otherwise, the divisor would have a norm that is smaller than a prime, is not $1$, and divides that prime, which is a contradiction).
 
