@@ -43,12 +43,11 @@ long iroot(long x, long n) {
     } else if (n == 3) {
         return icbrt(x);
     } else {
-        long fl = (long) pow(x, 1.0 / n);
-        long cl = (long) pow(x, 1.0 / n);
-        if (pow(cl, n) <= x) {
-            return cl;
+        long test = (long) pow(x, 1.0 / n);
+        if (pow(test + 1, n) <= x) {
+            return test + 1;
         } else {
-            return fl;
+            return test;
         }
     }
 }
