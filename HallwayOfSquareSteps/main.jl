@@ -94,6 +94,9 @@ function main()
         if x <= prime_list[a]
             return k == 1 ? 1 : 0
         end
+        if x <= prime_list[a]^2
+            return prime_k(k, x) - prime_k(k, prime_list[a]) + (k == 1 ? 1 : 0)
+        end
         value = phi_k(k, x, 1)
         for i in 2:a
             p_i = prime_list[i]

@@ -190,3 +190,5 @@ $$
 $$
 
 and the terms can be rearranged and we can set $k = 1$ to find $\pi_1(N)$.
+
+Finally, we can further optimize $\phi_k(x, a)$, by noticing that if $\sqrt{x} \leq p_a \iff x \leq p_a^2$, then $P_{k,2}(x,a) = 0$ and $\phi_k(x, a) = \pi_k(x) - \pi_k(p_a) + 1$. Because $\pi_k(p_a)$ is memoized, then we only need to compute $\pi_k(x)$. If $x$ is small enough, then this value has already been memoized. If not, then we reduce the size of $a$ really fast, speeding up the computation.
