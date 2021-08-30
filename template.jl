@@ -9,7 +9,12 @@ function iroot(a, b)
         return isqrt(a)
     end
 
-    return Int64(floor(Float64(a)^(1.0 / b)))
+    test_value = Int64(floor(Float64(a)^(1.0 / b)))
+    if (test_value + 1)^b <= a
+        return test_value + 1
+    end
+    
+    return test_value
 end
 
 function main()
