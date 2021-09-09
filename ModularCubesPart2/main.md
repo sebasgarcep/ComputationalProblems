@@ -161,7 +161,7 @@ $$
 S_k(N, a) = \sum_{\substack{1 \leq n \leq N \\ \\ p_1, \dots, p_a \nmid n \\ \\ T(n) = 3^k}} n
 $$
 
-Then
+Then the solution to the problem is $S_5(10^{11}, 0)$. Let's find an efficient formula for $S_k(N, a)$:
 
 $$
 \begin{align*}
