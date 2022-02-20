@@ -51,4 +51,4 @@ y' = p / y \\
 z' = p / z \\
 $$
 
-where $p$ is the smallest positive integer such that $x', y', z' \in \mathbb{N}$. Then by a similar logic as before we can show that $n$ is either 1 or 2. Thus $f_n(x, y, z) = 0$ is only possible when $n \in \{ -2, -1, 1, 2 \}$.
+where $p$ is the smallest positive integer such that $x', y', z' \in \mathbb{N}$. Then by a similar logic as before we can show that $n$ is either 1 or 2. Thus $f_n(x, y, z) = 0$ is only possible when $n \in \{ -2, -1, 1, 2 \}$. Because $k$ is small enough, we can brute force our way to the solution.
