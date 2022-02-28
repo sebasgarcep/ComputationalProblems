@@ -3,14 +3,13 @@ using LinearAlgebra
 using AbstractAlgebra
 
 function berlekamp_massey(K, x, s)
-    n = degree(s) + 1
     l = 0
     m = 0
     v = K(1)
     c = K(1)
     b = K(1)
 
-    for i in 0:(length(s) - 1)
+    for i in 0:degree(s)
         m += 1
 
         d = coeff(s, i)
