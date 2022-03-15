@@ -26,15 +26,13 @@ Thus $\Lambda^2 = \Lambda$, and because $\Lambda$ is a diagonal matrix with the 
 
 It is well-known that the sum of eigenvalues of a matrix equals the trace. The multiplicity of the $0$ eigenvalue gives us the rank of the null space of $M$. Thus by the rank-nullity theorem, the rank of $M$ is given by the multiplicity of $1$.
 
-If rank of $M$ is $3$, then $M$ is invertible. Thus
+If the rank of $M$ is $3$, then $M$ is invertible. Thus
 
 $$
 M^2 = M \Rightarrow M = I
 $$
 
 On the other hand, if the multiplicity of $1$ is $0$, then $M = 0$. Thus assume from now on that the rank of $M$ is $1$ or $2$.
-
-It is well-know that the trace of a matrix is given by the sum of eigenvalues. Because $M$ has a multiplicity of $1$ of either $1$ or $2$, then the trace of $M$ must equal either $1$ or $2$, depending on the rank.
 
 Suppose $M$ is a rank-$2$. Then $(I - M)^2 = I^2 - 2M + M^2 = I - M$. Thus $I - M$ is another idempotent matrix. Let $M = Q \Lambda Q^{-1}$ be the eigen-decomposition of $M$. Then $I - M = Q (I - \Lambda) Q^{-1}$ is the eigen-decomposition of $I - M$. Because
 
