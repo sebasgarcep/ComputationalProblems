@@ -5,19 +5,30 @@ using DataStructures
 # Assuming maximum size to enable simplistic balanced trees
 mutable struct Node
     value::Int64
-    bits::Int64
     split::Union{Nothing, Int64}
     left::Union{Nothing, Node}
     right::Union{Nothing, Node}
 end
 
-function get_num_bits(size::Int64)
+mutable struct Tree
+    bits::Int64
+    head::Node
+end
+
+function get_num_bits(size::Int64)::Int64
     num_bits = 0
     while size > 0
         num_bits += 1
         size = size >> 1
     end
     return num_bits
+end
+
+function Tree(size::Int64)::Tree
+    return Tree(
+        get_num_bits(size),
+        Node(0, nothing, nothing, nothing),
+    )
 end
 
 function reverse_bits(num::Int64, size::Int64)::Int64
@@ -30,16 +41,13 @@ function reverse_bits(num::Int64, size::Int64)::Int64
     return result
 end
 
-function Tree(size::Int64)::Node
-    return Node(0, get_num_bits(size), nothing, nothing, nothing)
-end
-
-function insert!(tree::Node, value::Int64, split::Int64, mod_size::Int64)
+function insert!(tree::Tree, value::Int64, split::Int64, mod_size::Int64)
     if value == 0
         return
     end
     bits = reverse_bits(split, tree.bits)
-    node = tree
+    node = tree.head
+    size = tree.bits
     acc = 0
     for _ in 1:tree.bits
         flag = bits & 1
@@ -47,25 +55,26 @@ function insert!(tree::Node, value::Int64, split::Int64, mod_size::Int64)
         node.value += value
         node.value = mod(node.value, mod_size)
         if node.split == nothing
-            node.split = acc + (1 << (node.bits - 1))
-            node.left = Node(0, node.bits - 1, nothing, nothing, nothing)
-            node.right = Node(0, node.bits - 1, nothing, nothing, nothing)
+            node.split = acc + (1 << (size - 1))
+            node.left = Node(0, nothing, nothing, nothing)
+            node.right = Node(0, nothing, nothing, nothing)
         end
         if flag == 0
             node = node.left
         else
-            acc += 1 << (node.bits - 1)
+            acc += 1 << (size - 1)
             node = node.right
         end
+        size -= 1
     end
     node.value += value
     node.value = mod(node.value, mod_size)
 end
 
-function search(tree::Node, split::Int64, mod_size::Int64)::Int64
+function search(tree::Tree, split::Int64, mod_size::Int64)::Int64
     result = 0
     bits = reverse_bits(split, tree.bits)
-    node = tree
+    node = tree.head
     for _ in 1:tree.bits
         if node.split == nothing
             break
