@@ -2,30 +2,30 @@
 #include <math.h>
 #include <stdio.h>
 
-// Problem parameters
-
-// Algorithm parameters
-
-// Static variables
-
-long mod(long a, long b) {
-    long r = a % b;
+constexpr long long mod(long long a, long long b) {
+    long long r = a % b;
     return r >= 0 ? r : r + b;
 }
 
-long isqrt(long n) {
-    long t = (long) sqrt(n);
-    if ((t + 1) * (t + 1) <= n) {
-        return t + 1;
-    } else if (t * t <= n) {
-        return t;
-    } else {
-        return t - 1;
+constexpr long long isqrt(long long x) {
+    long long q = 1;
+    while (q <= x)
+        q <<= 2;
+    long long r = 0;
+    while (q > 1) {
+        q >>= 2;
+        long long t = x - r - q;
+        r >>= 1;
+        if (t >= 0) {
+            x = t;
+            r += q;
+        }
     }
+    return r;
 }
 
-long icbrt(long n) {
-    long t = (long) cbrt(n);
+constexpr long long icbrt(long long n) {
+    long long t = (long long) cbrt(n);
     if ((t + 1) * (t + 1) * (t + 1) <= n) {
         return t + 1;
     } else if (t * t * t <= n) {
@@ -35,7 +35,7 @@ long icbrt(long n) {
     }
 }
 
-long iroot(long x, long n) {
+long long iroot(long long x, long long n) {
     if (n == 1) {
         return x;
     } else if (n == 2) {
@@ -43,7 +43,7 @@ long iroot(long x, long n) {
     } else if (n == 3) {
         return icbrt(x);
     } else {
-        long test = (long) pow(x, 1.0 / n);
+        long long test = (long long) pow(x, 1.0 / n);
         if (pow(test + 1, n) <= x) {
             return test + 1;
         } else {
@@ -51,6 +51,12 @@ long iroot(long x, long n) {
         }
     }
 }
+
+// Problem parameters
+
+// Algorithm parameters
+
+// Static variables
 
 int main() {
     // Begin time measurement
@@ -60,12 +66,12 @@ int main() {
     start = std::chrono::high_resolution_clock::now();
 
     // Problem result
-    long result = 0;
+    long long result = 0;
 
     // Solution
 
     // Show result
-    printf("%ld\n", result);
+    printf("%lld\n", result);
 
     // End time measurement
     stop = std::chrono::high_resolution_clock::now();
