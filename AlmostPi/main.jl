@@ -4,10 +4,6 @@ function f(n, k)
     return exp(Float64(k) / Float64(n)) - 1.0
 end
 
-function sort_fn(t)
-    return t[3]
-end
-
 function main()
     # Begin time measurement
     start = time()
@@ -22,41 +18,28 @@ function main()
     max_k = Int64(ceil(n * log(1 + pi)))
     f_memo = [f(n, k) for k in 1:max_k]
 
-    # Generate the list
+    # Generate the list of a, b
     values = []
+    values_a = []
+    values_b = []
+    sizehint!(values, max_k^2)
+    sizehint!(values_a, max_k^2)
+    sizehint!(values_b, max_k^2)
     for a in 1:max_k
         for b in a:max_k
             half_v = f_memo[a] + f_memo[b]
             push!(values, half_v)
+            push!(values_a, a)
+            push!(values_b, b)
         end
     end
-    sort!(values)
 
-    # Find the associated values of a, b
-    values_a = [0 for _ in 1:length(values)]
-    values_b = [0 for _ in 1:length(values)]
-    for a in 1:max_k
-        for b in a:max_k
-            test = f_memo[a] + f_memo[b]
-            lower = 1
-            upper = length(values)
-            while upper - lower > 1
-                midpoint = (lower + upper) >> 1
-                if values[midpoint] < test
-                    lower = midpoint
-                else
-                    upper = midpoint
-                end
-            end
-            if values[lower] == test
-                values_a[lower] = a
-                values_b[lower] = b
-            else
-                values_a[upper] = a
-                values_b[upper] = b
-            end
-        end
-    end
+    sort_indexes = zeros(Int64, length(values))
+    sortperm!(sort_indexes, values)
+
+    values = values[sort_indexes]
+    values_a = values_a[sort_indexes]
+    values_b = values_b[sort_indexes]
 
     # For each c, d find optimal a, b
     min_e = nothing
