@@ -1,4 +1,5 @@
 using Printf
+using AbstractAlgebra
 
 function get_next_coefficients(coeffs)
     if length(coeffs) == 0
@@ -10,15 +11,15 @@ function get_next_coefficients(coeffs)
         if r == 0
             a_ir = BigInt(0) // BigInt(1)
             for k in 0:(i - 2)
-                a_ir +=  factorial(k) * (coeffs[k + 1][2] - (-1)^k * coeffs[k + 1][1])
+                a_ir +=  factorial(BigInt(k)) * (coeffs[k + 1][2] - (-1)^k * coeffs[k + 1][1])
             end
             b_ir = -a_ir
         else
             a_ir = coeffs[r][1] // r
             b_ir = -coeffs[r][2] // r
             for k in r:(i - 2)
-                a_ir -= (-1)^(k - r) * factorial(k) * coeffs[k + 1][1] // factorial(r)
-                b_ir -= factorial(k) * coeffs[k + 1][2] // factorial(r)
+                a_ir -= (-1)^(k - r) * factorial(BigInt(k)) * coeffs[k + 1][1] // factorial(BigInt(r))
+                b_ir -= factorial(BigInt(k)) * coeffs[k + 1][2] // factorial(BigInt(r))
             end
         end
         push!(next_coeffs, (a_ir, b_ir))
@@ -26,66 +27,62 @@ function get_next_coefficients(coeffs)
     return next_coeffs
 end
 
-function int_log_k_div_x(k, y)
-    return log(y)^(k + 1) / (k + 1)
+"""
+All integrals are evaluated at upper bound = 1 and lower bound = y.
+Notice that the evaluation at cancels most of the terms of each
+integral, which is why most of the work involves evaluation at y.
+"""
+function int_log_k_div_x(k, y, u)
+    return -(1 // (k + 1)) * u^(k + 1)
 end
 
-function int_log_k(k, y)
-    value = 0.0
+function int_log_k(k, y, u)
+    value = BigInt(0) // BigInt(1)
     for r in 0:k
-        value += (-1.0)^(k - r) * log(y)^r / factorial(r)
+        value -= ((-1)^(k - r) // factorial(BigInt(r))) * u^r
     end
-    value *= y * factorial(k)
+    value *= y * factorial(BigInt(k))
+    value += factorial(BigInt(k)) * (-1)^k
     return value
 end
 
-function int_log_k_div_x_sq(k, y)
-    value = 0.0
+function int_log_k_div_x_sq(k, y, u)
+    value = BigInt(0) // BigInt(1)
     for r in 0:k
-        value += log(y)^r / factorial(r)
+        value -= (1 // factorial(BigInt(r))) * u^r
     end
-    value *= -factorial(k) / y
+    value *= -factorial(BigInt(k)) // y
+    value += -factorial(BigInt(k))
     return value
 end
 
-function eval_s(prev_coeffs, lower, upper)
-    value = 0.0
+function int_s(prev_coeffs, z, u)
+    value = BigInt(0) // BigInt(1)
     i = length(prev_coeffs) + 1
     for k in 0:(i - 2)
-        value += Float64(prev_coeffs[k + 1][1]) * (int_log_k(k, upper) - int_log_k(k, lower))
-        value += Float64(prev_coeffs[k + 1][2]) * (int_log_k_div_x(k, upper) - int_log_k_div_x(k, lower))
+        value += prev_coeffs[k + 1][1] * int_log_k(k, z, u)
+        value += prev_coeffs[k + 1][2] * int_log_k_div_x(k, z, u)
     end
-    value *= 2.0^(i - 1)
+    value *= BigInt(2)^(i - 1)
     return value
 end
 
-function eval_t(prev_coeffs, lower, upper)
-    value = 0.0
+function int_t(prev_coeffs, z, u)
+    value = BigInt(0) // BigInt(1)
     i = length(prev_coeffs) + 1
     for k in 0:(i - 2)
-        value += Float64(prev_coeffs[k + 1][1]) * (int_log_k_div_x(k, upper) - int_log_k_div_x(k, lower))
-        value += Float64(prev_coeffs[k + 1][2]) * (int_log_k_div_x_sq(k, upper) - int_log_k_div_x_sq(k, lower))
+        value += prev_coeffs[k + 1][1] * int_log_k_div_x(k, z, u)
+        value += prev_coeffs[k + 1][2] * int_log_k_div_x_sq(k, z, u)
     end
-    value *= 2.0^(i - 1)
+    value *= BigInt(2)^(i - 1)
     return value
 end
 
-function calc_t(prev_coeffs, z)
-    value = 0.0
-    i = length(prev_coeffs) + 1
-    for k in 0:(i - 2)
-        value += Float64(prev_coeffs[k + 1][1]) * int_log_k_div_x(k, z)
-        value += Float64(prev_coeffs[k + 1][2]) * int_log_k_div_x_sq(k, z)
-    end
-    value *= 2.0^(i - 1)
-    return value
-end
-
-function joint_probability(prev_coeffs, z)
+function joint_probability(prev_coeffs, z, u)
     if length(prev_coeffs) == 0
-        return 2.0 * z - z^2
+        return 2 * z - z^2
     end
-    return 2.0 * z * eval_s(prev_coeffs, z, 1.0) - z^2 * eval_t(prev_coeffs, z, 1.0)
+    return 2 * z * int_s(prev_coeffs, z, u) - z^2 * int_t(prev_coeffs, z, u)
 end
 
 function main()
@@ -94,20 +91,37 @@ function main()
     result = 0
 
     # Problem parameters
-    x = 7.5
+    x = BigInt(40) // BigInt(1)
 
     # Algorithm parameters
 
     # Solution
-    z = 1.0 / x
+
+    """
+    Instead of directly computing the answer, we get a polynomial
+    expression in terms of u = log(z). Then we evaluate the
+    expression using BigFloats to avoid rounding issues.
+    """
+    _, u = PolynomialRing(QQ, "u")
+
+    expression = BigInt(0) // BigInt(1)
+
+    z = BigInt(1) / x
     prev_coeffs = [] 
-    for i in 1:10
-        result += i * joint_probability(prev_coeffs, z)
+    for i in 1:30
+        expression += i * joint_probability(prev_coeffs, z, u)
         prev_coeffs = get_next_coefficients(prev_coeffs)
     end
+    
+    u_val = log(BigFloat(z))
+    for k in 0:degree(expression)
+        result += BigFloat(coeff(expression, k)) * u_val^k
+    end
+
+    result = Float64(result)
 
     # Show result
-    println(result)
+    @printf("%.10f\n", result)
 
     # End time measurement
     elapsed = time() - start
