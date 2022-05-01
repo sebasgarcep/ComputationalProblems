@@ -64,8 +64,38 @@ $$
 
 First let's prove a theorem about the PDF of products of independent random variables.
 
----
-FIXME:  PROVE THIS
+### Lemma: PDF of product of independent random variables
+
+If $X$ and $Y$ are two independent, continuous random variables, described by probability density functions $f_X$ and $f_Y$, respectively, then the probability density function of $Z = XY$ is
+
+$$
+f_Z(z) = \int_{-\infty}^\infty f_X(x) f_Y(y) \frac{1}{|x|} \, dx
+$$
+
+### Proof:
+
+$$
+\begin{align*}
+P(Z \le z)
+&= P(XY \le z) \\
+&= P(Y \le \frac{z}{X}, X \gt 0) + P(Y \ge \frac{z}{X}, X \lt 0) \\
+&= \int_0^\infty f_X(x) \int_{-\infty}^{z/x} f_Y(y) \, dy \, dx
++ \int_{-\infty}^0 f_X(x) \int_{z/x}^\infty f_Y(y) \, dy \, dx \\
+\end{align*}
+$$
+
+Taking the derivative with respect to $Z$ of both sides (applying the fundamental theorem of calculus and the chain rule) gives us
+
+$$
+\begin{align*}
+f_Z(z)
+&= \int_0^\infty f_X(x) f_Y(z/x) \frac{1}{x} \, dx
+- \int_{-\infty}^0 f_X(x) f_Y(z/x) \frac{1}{x} \, dx \\
+&= \int_0^\infty f_X(x) f_Y(z/x) \frac{1}{|x|} \, dx
++ \int_{-\infty}^0 f_X(x) f_Y(z/x) \frac{1}{|x|} \, dx \\
+&= \int_{-\infty}^\infty f_X(x) f_Y(z/x) \frac{1}{|x|} \, dx
+\end{align*}
+$$
 
 ---
 
