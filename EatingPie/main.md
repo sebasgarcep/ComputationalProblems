@@ -22,10 +22,14 @@ Find E(40) rounded to 10 decimal places behind the decimal point.
 
 ## Solution
 
+Notice that the area of the pie taken is proportional to arc length of the pie taken. Therefore the proportion of the pie taken on each cut is uniformly distributed.
+
 Suppose $y_i$ is the fraction of the pie left after the $i$-th step, relative to how it was in the previous step. So if we have $1/2$ pie at step $i-1$ and $y_i = 1/4$ then we are left with $1/8$ pie after step $i$. Let $z_i$ be the fraction of the pie left after the $i$-th step, relative to the initial, complete pie. Thus $z_0 = 1$, $z_i = y_1 \dots y_i$. Let $y_i \sim Y_i, z_i \sim Z_i$, where $Y_i, Z_i$ are random variables. Then
 
 $$
-E(x) = \sum_{i = 1}^{\infty} i \cdot P(Z_{i-1} \ge \frac{1}{x}) \cdot P(Z_i \lt \frac{1}{x})
+\begin{align*}
+E(x) = \sum_{i = 1}^{\infty} i \cdot P(Z_{i-1} \ge \frac{1}{x} \cap Z_i \lt \frac{1}{x})
+\end{align*}
 $$
 
 where $P(Z_0 \ge \frac{1}{x}) = 1$, as $z_0 = 1 \ge \frac{1}{x} \iff x \ge 1$.
@@ -107,7 +111,7 @@ $$
 Notice that
 
 $$
-\frac{d}{dy} \left[ \frac{\log^{k+1}(y)}{k+1} \right] = \frac{\log^k(y)}{y} \iff \frac{\log^{k+1}(y)}{k+1} + K = \int \frac{\log^k(y)}{y}
+\frac{d}{dy} \left[ \frac{\log^{k+1}(y)}{k+1} \right] = \frac{\log^k(y)}{y} \iff \frac{\log^{k+1}(y)}{k+1} + K = \int \frac{\log^k(y)}{y} \, dy
 $$
 
 On the other hand
@@ -202,84 +206,63 @@ A_{i, r} = \frac{A_{i-1,r-1}}{r} - \sum_{k = r}^{i-2} (-1)^{k-r} \frac{k!}{r!} A
 B_{i, r} = -\frac{B_{i-1,r-1}}{r} - \sum_{k = r}^{i-2} \frac{k!}{r!} B_{i-1,k} \\
 $$
 
-### CDF of $Z_i$
+### Joint Probability
 
-With this
-
-$$
-\begin{align*}
-P(Z_i \le z)
-&= \int_0^z f_{Z_i}(x) \, dx \\
-&= \int_0^z 2^i \sum_{k = 0}^{i-1} (A_{i,k} x + B_{i,k}) \log^k(x) \, dx \\
-&= 2^i \sum_{k = 0}^{i-1} A_{i,k} \int_0^z x \log^k(x) \, dx + 2^i \sum_{k = 0}^{i-1} B_{i,k} \int_0^z \log^k(x) \, dx \\
-\end{align*}
-$$
-
-where
+Suppose $i = 1$. Then
 
 $$
 \begin{align*}
-\int x \log^k(x)
-&= \frac{x^2}{2} \cdot \log^k(x) - \int \frac{x^2}{2} \cdot k \cdot \log^{k-1}(x) / x \, dx \\
-&= \frac{x^2}{2} \cdot \log^k(x) - \frac{k}{2} \int x \cdot \log^{k-1}(x) \, dx \\
-&= x^2 \log^k(x) / 2 - k x^2 \log^{k-1}(x) / 4 + k(k-1) x^2 \log^{k-2}(x) / 8 - \dots \\
-&= \frac{x^2 \cdot k!}{2^{k+1}} \sum_{r=0}^k (-1)^{k-r} \cdot 2^r \cdot \frac{\log^r(x)}{r!} + K
+P(Z_0 \ge \frac{1}{x} \cap Z_1 \lt \frac{1}{x})
+&= P(Z_1 \lt \frac{1}{x}) \\
+&= P(Y \lt \frac{1}{x}) \\
+&= 1 - P(Y \gt \frac{1}{x}) \\
+&= 1 - (1 - \frac{1}{x})^2 \\
 \end{align*}
 $$
 
-Therefore
+Now suppose $i \ge 2$. Notice that $z_i = y z_{i-1} \lt \frac{1}{x} \Rightarrow y \lt \frac{1}{x \cdot z_{i-1}}$. Therefore the joint probability distribution we use in the computation of $E(x)$ is
 
 $$
 \begin{align*}
-P(Z_i \le z)
-&= 2^i \sum_{k = 0}^{i-1} A_{i,k} \int_0^z x \log^k(x) \, dx \\
-&+ 2^i \sum_{k = 0}^{i-1} B_{i,k} \int_0^z \log^k(x) \, dx \\
-
-&= 2^i \sum_{k = 0}^{i-1} A_{i,k} \left[ \frac{x^2 \cdot k!}{2^{k+1}} \sum_{r=0}^k (-1)^{k-r} \cdot 2^r \cdot \frac{\log^r(x)}{r!} \right]_0^z \\
-&+ 2^i \sum_{k = 0}^{i-1} B_{i,k} \left[ x \cdot k! \sum_{r=0}^k (-1)^{k-r} \frac{\log^r(x)}{r!} \right]_0^z \\
+P(Z_{i-1} \ge \frac{1}{x} \cap Z_i \lt \frac{1}{x})
+&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \int_0^{\min(1, \frac{1}{x \cdot z_{i-1}})} f_Y(y) \, dy \, dz_{i-1} \\
 \end{align*}
 $$
 
-This is clearly an improper integral due to the lower bound, so we need to verify that the lower limit exists. Let's prove that for any $s \ge 1$ and any $r \ge 0$ then
-
-$$
-\lim_{x \rightarrow 0^+} x^s \log^r(x) = 0
-$$
-
-The identity clearly holds when $r = 0$. Notice that
+Because $\frac{1}{x \cdot z_{i-1}} \le 1 \iff \frac{1}{x} \le z_{i-1}$ we have $\min(1, \frac{1}{x \cdot z_{i-1}}) = \frac{1}{x \cdot z_{i-1}}$, which allows us to simplify our integral. The integral of $f_Y(y) = 2 - 2y$ is $2y - y^2$, which evaluated at $\frac{1}{x \cdot z_{i-1}}$ and $0$ gives us $\frac{2}{x \cdot z_{i-1}} - \frac{1}{x^2 \cdot z_{i-1}^2}$. Therefore
 
 $$
 \begin{align*}
-\lim_{x \rightarrow 0^+} x^s \log^r(x)
-&= \lim_{x \rightarrow 0^+} \frac{\log^r(x)}{\frac{1}{x^s}} \\
-&= \lim_{x \rightarrow 0^+} \frac{r \cdot \log^{r-1}(x) \cdot (1/x)}{\frac{-s}{x^{s+1}}} \\
-&= \lim_{x \rightarrow 0^+} \frac{r \cdot \log^{r-1}(x)}{\frac{-s}{x^s}} \\
-&= -\frac{r}{s} \cdot \lim_{x \rightarrow 0^+} \frac{\log^{r-1}(x)}{\frac{1}{x^s}} \\
-&= -\frac{r}{s} \cdot \lim_{x \rightarrow 0^+} x^s \log^{r-1}(x) \\
+P(Z_{i-1} \ge \frac{1}{x} \cap Z_i \lt \frac{1}{x})
+&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \int_0^{\min(1, \frac{1}{x \cdot z_{i-1}})} f_Y(y) \, dy \, dz_{i-1} \\
+&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \left[ \frac{2}{x \cdot z_{i-1}} - \frac{1}{x^2 \cdot z_{i-1}^2} \right] \, dz_{i-1} \\
+&= \frac{2}{x} \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
+&- \frac{1}{x^2} \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
 \end{align*}
 $$
 
-and by induction one can prove the general case. Applying this limit to the integral above we get
+Let $S_i$ be the indefinite version of the first integral and $T_i$ be the indefinite version second one. Then
 
 $$
 \begin{align*}
-P(Z_i \le z)
-&= 2^i \sum_{k = 0}^{i-1} A_{i,k} \left[ \frac{x^2 \cdot k!}{2^{k+1}} \sum_{r=0}^k (-1)^{k-r} \cdot 2^r \cdot \frac{\log^r(x)}{r!} \right]_0^z \\
-&+ 2^i \sum_{k = 0}^{i-1} B_{i,k} \left[ x \cdot k! \sum_{r=0}^k (-1)^{k-r} \frac{\log^r(x)}{r!} \right]_0^z \\
-
-&= 2^i \sum_{k = 0}^{i-1} A_{i,k} \left[ \frac{z^2 \cdot k!}{2^{k+1}} \sum_{r=0}^k (-1)^{k-r} \cdot 2^r \cdot \frac{\log^r(z)}{r!} \right] \\
-&+ 2^i \sum_{k = 0}^{i-1} B_{i,k} \left[ z \cdot k! \sum_{r=0}^k (-1)^{k-r} \frac{\log^r(z)}{r!} \right] \\
+S_i
+&= \int f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
+&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} z_{i-1} + B_{i-1,k}) \log^k(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
+&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \log^k(z_{i-1}) \, dz_{i-1} \\
+&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}} \, dz_{i-1} \\
 \end{align*}
 $$
 
-## Notes
-
-A few test values for the PDF of $Z_i$
+and we have already computed the inner integrals. $T_i$ gives us a similar result
 
 $$
 \begin{align*}
-f_{Z_1}(z) &= -2(z-1) \\
-f_{Z_2}(z) &= 4 (2(z-1) -(z+1)\log(z)) \\
-f_{Z_3}(z) &= -8 (6z-6 -(3z+3)\log(z) + (\frac{1}{2}z-\frac{1}{2})\log^2(z)) \\
+T_i
+&= \int f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
+&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} z_{i-1} + B_{i-1,k}) \log^k(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
+&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}} \, dz_{i-1} \\
+&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}^2} \, dz_{i-1} \\
 \end{align*}
 $$
+
+and we have already computed the inner integrals. The result follows from putting everything together.

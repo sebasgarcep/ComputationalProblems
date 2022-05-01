@@ -1,6 +1,9 @@
 using Printf
 
 function get_next_coefficients(coeffs)
+    if length(coeffs) == 0
+        return [(-1 // 1, 1 // 1)]
+    end
     i = length(coeffs) + 1
     next_coeffs = []
     for r in 0:(i - 1)
@@ -23,25 +26,64 @@ function get_next_coefficients(coeffs)
     return next_coeffs
 end
 
-function get_cumulative(coeffs, z)
+function int_log_k_div_x(k, y)
+    return log(y)^(k + 1) / (k + 1)
+end
+
+function int_log_k(k, y)
     value = 0.0
-    i = length(coeffs)
-    for k in 0:(i - 1)
-        int_1 = 0.0
-        for r in 0:k
-            int_1 += (-1.0)^(k - r) * 2.0^r * (log(z))^r / factorial(r)
-        end
-        int_1 *= z^2 * factorial(k) / 2.0^(k + 1)
-        int_2 = 0.0
-        for r in 0:k
-            int_2 += (-1.0)^(k - r) * (log(z))^r / factorial(r)
-        end
-        int_2 *= z * factorial(k)
-        value += Float64(coeffs[k + 1][1]) * int_1
-        value += Float64(coeffs[k + 1][2]) * int_2
+    for r in 0:k
+        value += (-1.0)^(k - r) * log(y)^r / factorial(r)
     end
-    value *= 2.0^i
+    value *= y * factorial(k)
     return value
+end
+
+function int_log_k_div_x_sq(k, y)
+    value = 0.0
+    for r in 0:k
+        value += log(y)^r / factorial(r)
+    end
+    value *= -factorial(k) / y
+    return value
+end
+
+function calc_s(prev_coeffs, x)
+    value = 0.0
+    i = length(prev_coeffs) + 1
+    for k in 0:(i - 2)
+        value += Float64(prev_coeffs[k + 1][1]) * int_log_k(k, x)
+        value += Float64(prev_coeffs[k + 1][2]) * int_log_k_div_x(k, x)
+    end
+    value *= 2.0^(i - 1)
+    return value
+end
+
+function eval_s(prev_coeffs, lower, upper)
+    return calc_s(prev_coeffs, upper) - calc_s(prev_coeffs, lower)
+end
+
+function calc_t(prev_coeffs, x)
+    value = 0.0
+    i = length(prev_coeffs) + 1
+    for k in 0:(i - 2)
+        value += Float64(prev_coeffs[k + 1][1]) * int_log_k_div_x(k, x)
+        value += Float64(prev_coeffs[k + 1][2]) * int_log_k_div_x_sq(k, x)
+    end
+    value *= 2.0^(i - 1)
+    return value
+end
+
+function eval_t(prev_coeffs, lower, upper)
+    return calc_t(prev_coeffs, upper) - calc_t(prev_coeffs, lower)
+end
+
+function joint_probability(prev_coeffs, x)
+    z = 1.0 / x
+    if length(prev_coeffs) == 0
+        return 1.0 - (1.0 - z)^2
+    end
+    return 2 * z * eval_s(prev_coeffs, z, 1.0) - z^2 * eval_t(prev_coeffs, z, 1.0)
 end
 
 function main()
@@ -50,20 +92,15 @@ function main()
     result = 0
 
     # Problem parameters
-    x = 2.0
+    x = 7.5
 
     # Algorithm parameters
 
     # Solution
-    z = 1.0 / x
-    prev_coeffs, curr_coeffs = [], [(-1 // 1, 1 // 1)]
+    prev_coeffs = [] 
     for i in 1:10
-        if i == 1
-            result += i * get_cumulative(curr_coeffs, z)
-        else
-            result += i * (1.0 - get_cumulative(prev_coeffs, z)) * get_cumulative(curr_coeffs, z)
-        end
-        prev_coeffs, curr_coeffs = curr_coeffs, get_next_coefficients(curr_coeffs)
+        result += i * joint_probability(prev_coeffs, x)
+        prev_coeffs = get_next_coefficients(prev_coeffs)
     end
 
     # Show result
