@@ -242,32 +242,26 @@ Suppose $i = 1$. Then
 
 $$
 \begin{align*}
-P(Z_0 \ge \frac{1}{x} \cap Z_1 \lt \frac{1}{x})
-&= P(Z_1 \lt \frac{1}{x}) \\
-&= P(Y \lt \frac{1}{x}) \\
-&= 1 - P(Y \gt \frac{1}{x}) \\
-&= 1 - (1 - \frac{1}{x})^2 \\
+P(Z_0 \ge z \cap Z_1 \lt z)
+&= P(Z_1 \lt z) \\
+&= P(Y \lt z) \\
+&= 2z - z^2 \\
 \end{align*}
 $$
 
-Now suppose $i \ge 2$. Notice that $z_i = y z_{i-1} \lt \frac{1}{x} \Rightarrow y \lt \frac{1}{x \cdot z_{i-1}}$. Therefore the joint probability distribution we use in the computation of $E(x)$ is
+Now suppose $i \ge 2$
 
 $$
 \begin{align*}
-P(Z_{i-1} \ge \frac{1}{x} \cap Z_i \lt \frac{1}{x})
-&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \int_0^{\min(1, \frac{1}{x \cdot z_{i-1}})} f_Y(y) \, dy \, dz_{i-1} \\
-\end{align*}
-$$
-
-Because $\frac{1}{x \cdot z_{i-1}} \le 1 \iff \frac{1}{x} \le z_{i-1}$ we have $\min(1, \frac{1}{x \cdot z_{i-1}}) = \frac{1}{x \cdot z_{i-1}}$, which allows us to simplify our integral. The integral of $f_Y(y) = 2 - 2y$ is $2y - y^2$, which evaluated at $\frac{1}{x \cdot z_{i-1}}$ and $0$ gives us $\frac{2}{x \cdot z_{i-1}} - \frac{1}{x^2 \cdot z_{i-1}^2}$. Therefore
-
-$$
-\begin{align*}
-P(Z_{i-1} \ge \frac{1}{x} \cap Z_i \lt \frac{1}{x})
-&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \int_0^{\min(1, \frac{1}{x \cdot z_{i-1}})} f_Y(y) \, dy \, dz_{i-1} \\
-&= \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \left[ \frac{2}{x \cdot z_{i-1}} - \frac{1}{x^2 \cdot z_{i-1}^2} \right] \, dz_{i-1} \\
-&= \frac{2}{x} \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
-&- \frac{1}{x^2} \int_{1/x}^1 f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
+P(Z_{i-1} \ge z \cap Z_i \lt z)
+&= P(Z_{i-1} \ge z \cap Y Z_{i-1} \lt z) \\
+&= P(Z_{i-1} \ge z \cap Y \lt z / Z_{i-1}) \\
+&= \int_z^1 f_{Z_{i-1}}(x) \int_0^\frac{z}{x} f_Y(y) \, dy \, dx \\
+&= \int_z^1 f_{Z_{i-1}}(x) \int_0^\frac{z}{x} 2 - 2y \, dy \, dx \\
+&= \int_z^1 f_{Z_{i-1}}(x) \left[ 2y - y^2 \right]_0^\frac{z}{x} \, dx \\
+&= \int_z^1 f_{Z_{i-1}}(x) \left[ \frac{2z}{x} - \frac{z^2}{x^2} \right] \, dx \\
+&= 2z \int_z^1 \frac{f_{Z_{i-1}}(x)}{x} \, dx \\
+&- z^2 \int_z^1 \frac{f_{Z_{i-1}}(x)}{x^2} \, dx \\
 \end{align*}
 $$
 
@@ -276,10 +270,10 @@ Let $S_i$ be the indefinite version of the first integral and $T_i$ be the indef
 $$
 \begin{align*}
 S_i
-&= \int f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
-&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} z_{i-1} + B_{i-1,k}) \log^k(z_{i-1}) \frac{1}{z_{i-1}} \, dz_{i-1} \\
-&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \log^k(z_{i-1}) \, dz_{i-1} \\
-&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}} \, dz_{i-1} \\
+&= \int \frac{f_{Z_{i-1}}(x)}{x} \, dx \\
+&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} x + B_{i-1,k}) \log^k(x) \frac{1}{x} \, dx \\
+&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \log^k(x) \, dx \\
+&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(x)}{x} \, dx \\
 \end{align*}
 $$
 
@@ -288,10 +282,10 @@ and we have already computed the inner integrals. $T_i$ gives us a similar resul
 $$
 \begin{align*}
 T_i
-&= \int f_{Z_{i-1}}(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
-&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} z_{i-1} + B_{i-1,k}) \log^k(z_{i-1}) \frac{1}{z_{i-1}^2} \, dz_{i-1} \\
-&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}} \, dz_{i-1} \\
-&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(z_{i-1})}{z_{i-1}^2} \, dz_{i-1} \\
+&= \int f_{Z_{i-1}}(x) \frac{1}{x^2} \, dx \\
+&= \int 2^{i-1} \sum_{k = 0}^{i-2} (A_{i-1,k} x + B_{i-1,k}) \log^k(x) \frac{1}{x^2} \, dx \\
+&= 2^{i-1} \sum_{k = 0}^{i-2} A_{i-1,k} \int \frac{\log^k(x)}{x} \, dx \\
+&+ 2^{i-1} \sum_{k = 0}^{i-2} B_{i-1,k} \int \frac{\log^k(x)}{x^2} \, dx \\
 \end{align*}
 $$
 
