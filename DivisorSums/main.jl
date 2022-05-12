@@ -44,10 +44,6 @@ function get_phi(n, phi_val_lo, phi_val_hi, x)
     return phi_val_hi[fld(n, x)]
 end
 
-function calc_phi_next(n, phi_val_lo, phi_val_hi, primes, x)
-    return 
-end
-
 function bump_phi(n, bound_lo, bound_hi, phi_val_lo, phi_val_hi, primes, a)
     next_phi_val_lo = [0 for _ in 1:bound_lo]
     next_phi_val_hi = [0 for _ in 1:bound_hi]
