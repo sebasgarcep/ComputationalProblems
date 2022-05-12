@@ -33,6 +33,99 @@ function get_primes(n)
     return primes, slots
 end
 
+# DP implementation of the Meissel-Lehmer algorithm
+function get_phi(n, phi_val_lo, phi_val_hi, x)
+    if x <= 0
+        return 0
+    end
+    if x <= length(phi_val_lo)
+        return phi_val_lo[x]
+    end
+    return phi_val_hi[fld(n, x)]
+end
+
+function calc_phi_next(n, phi_val_lo, phi_val_hi, primes, x)
+    return 
+end
+
+function bump_phi(n, bound_lo, bound_hi, phi_val_lo, phi_val_hi, primes, a)
+    next_phi_val_lo = [0 for _ in 1:bound_lo]
+    next_phi_val_hi = [0 for _ in 1:bound_hi]
+    for d in 1:bound_lo
+        next_phi_val_lo[d] = get_phi(n, phi_val_lo, phi_val_hi, d) - get_phi(n, phi_val_lo, phi_val_hi, fld(d, primes[a]))
+    end
+    for d in 1:bound_hi
+        next_phi_val_hi[d] = get_phi(n, phi_val_lo, phi_val_hi, fld(n, d)) - get_phi(n, phi_val_lo, phi_val_hi, fld(n, d * primes[a]))
+    end
+    return next_phi_val_lo, next_phi_val_hi
+end
+
+function get_pi_vals(n, bound_lo, bound_hi, primes, slots)
+    pi_val_lo = [0 for _ in 1:bound_lo]
+    pi_val_hi = [0 for _ in 1:bound_hi]
+
+    # Get pi for small values
+    acc = 0
+    for d in 1:bound_lo
+        if slots[d]
+            acc += 1
+        end
+        pi_val_lo[d] = acc
+    end
+
+    a_init = get_pi(n, pi_val_lo, pi_val_hi, iroot(fld(n, bound_hi), 4))
+    a_curr = 0
+    phi_val_lo = [d for d in 1:bound_lo]
+    phi_val_hi = [fld(n, d) for d in 1:bound_hi]
+    for _ in 1:a_init
+        a_curr += 1
+        phi_val_lo, phi_val_hi = bump_phi(n, bound_lo, bound_hi, phi_val_lo, phi_val_hi, primes, a_curr)
+    end
+
+    # Get pi for large values
+    for d in bound_hi:-1:1
+        x = fld(n, d)
+
+        # Enumeration constants
+        a = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 4))
+        while a_curr < a
+            a_curr += 1
+            phi_val_lo, phi_val_hi = bump_phi(n, bound_lo, bound_hi, phi_val_lo, phi_val_hi, primes, a_curr)
+        end
+        b = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 2))
+        c = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 3))
+    
+        # Base answer
+        res = a - 1 + get_phi(n, phi_val_lo, phi_val_hi, x)
+    
+        # Calculate P2(x, a)
+        res -= binomial(a, 2) - binomial(b, 2)
+        for i in (a + 1):b
+            x_div_p = fld(x, primes[i])
+            res -= get_pi(n, pi_val_lo, pi_val_hi, x_div_p)
+            # Calculate P3(x, a)
+            if i <= c
+                bi = get_pi(n, pi_val_lo, pi_val_hi, isqrt(x_div_p))
+                for j in i:bi
+                    res -= get_pi(n, pi_val_lo, pi_val_hi, fld(x_div_p, primes[j])) - (j - 1)
+                end
+            end
+        end
+
+        pi_val_hi[d] = res
+    end
+
+    return pi_val_lo, pi_val_hi
+end
+
+function get_pi(n, pi_val_lo, pi_val_hi, x)
+    if x <= length(pi_val_lo)
+        return pi_val_lo[x]
+    end
+    return pi_val_hi[fld(n, x)]
+end
+# Finish implementation
+
 function factorize_m_fact(m_fact, primes)
     m_fact_factorization = []
     for p in primes
@@ -122,77 +215,6 @@ function get_d1_cnts(n, bound_lo, bound_hi, m_fact_factorization, primes, pi_val
     end
 
     return d1_cnt_lo, d1_cnt_hi
-end
-
-function get_pi(n, pi_val_lo, pi_val_hi, x)
-    if x <= length(pi_val_lo)
-        return pi_val_lo[x]
-    end
-    return pi_val_hi[fld(n, x)]
-end
-
-function phi(primes, x, a)
-    # Base cases
-    if a == 0
-        return x
-    elseif x <= primes[a]
-        return 1
-    elseif a == 1
-        return x - fld(x, 2)
-    elseif a == 2
-        return x - fld(x, 2) - fld(x, 3) + fld(x, 6)
-    end
-    res = x - fld(x, 2) - fld(x, 3) - fld(x, 5) + fld(x, 6) + fld(x, 10) + fld(x, 15) - fld(x, 30)
-    for ai in 3:(a - 1)
-        res -= phi(primes, fld(x, primes[ai + 1]), ai)
-    end
-    return res
-end
-
-# DP implementation of the Meissel-Lehmer algorithm
-function get_pi_vals(n, bound_lo, bound_hi, primes, slots)
-    pi_val_lo = [0 for _ in 1:bound_lo]
-    pi_val_hi = [0 for _ in 1:bound_hi]
-
-    # Get pi for small values
-    acc = 0
-    for d in 1:bound_lo
-        if slots[d]
-            acc += 1
-        end
-        pi_val_lo[d] = acc
-    end
-
-    # Get pi for large values
-    for d in bound_hi:-1:1
-        x = fld(n, d)
-
-        # Enumeration constants
-        a = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 4))
-        b = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 2))
-        c = get_pi(n, pi_val_lo, pi_val_hi, iroot(x, 3))
-
-        # Base answer
-        res = a - 1 + phi(primes, x, a)
-
-        # Calculate P2(x, a)
-        res -= binomial(a, 2) - binomial(b, 2)
-        for i in (a + 1):b
-            x_div_p = fld(x, primes[i])
-            res -= get_pi(n, pi_val_lo, pi_val_hi, x_div_p)
-            # Calculate P3(x, a)
-            if i <= c
-                bi = get_pi(n, pi_val_lo, pi_val_hi, isqrt(x_div_p))
-                for j in i:bi
-                    res -= get_pi(n, pi_val_lo, pi_val_hi, fld(x_div_p, primes[j])) - (j - 1)
-                end
-            end
-        end
-
-        pi_val_hi[d] = res
-    end
-
-    return pi_val_lo, pi_val_hi
 end
 
 function get_d1_val(n, pi_val_lo, pi_val_hi, primes, mod_size, d)
