@@ -2,19 +2,46 @@
 #include <math.h>
 #include <stdio.h>
 
-constexpr long long mod(long long a, long long b) {
-    long long r = a % b;
+typedef long long ll;
+
+constexpr ll mod(ll a, ll b) {
+    ll r = a % b;
     return r >= 0 ? r : r + b;
 }
 
-constexpr long long isqrt(long long x) {
-    long long q = 1;
+ll invmod(ll a, ll b)
+{
+	ll b0 = b, t, q;
+	ll x0 = 0, x1 = 1;
+	if (b == 1) return 1;
+	while (a > 1) {
+		q = a / b;
+		t = b, b = a % b, a = t;
+		t = x0, x0 = x1 - q * x0, x1 = t;
+	}
+	if (x1 < 0) x1 += b0;
+	return x1;
+}
+
+ll powermod(ll base, ll exp, ll modulus) {
+  base %= modulus;
+  ll result = 1;
+  while (exp > 0) {
+    if (exp & 1) result = (result * base) % modulus;
+    base = (base * base) % modulus;
+    exp >>= 1;
+  }
+  return result;
+}
+
+constexpr ll isqrt(ll x) {
+    ll q = 1;
     while (q <= x)
         q <<= 2;
-    long long r = 0;
+    ll r = 0;
     while (q > 1) {
         q >>= 2;
-        long long t = x - r - q;
+        ll t = x - r - q;
         r >>= 1;
         if (t >= 0) {
             x = t;
@@ -24,8 +51,8 @@ constexpr long long isqrt(long long x) {
     return r;
 }
 
-constexpr long long icbrt(long long n) {
-    long long t = (long long) cbrt(n);
+constexpr ll icbrt(ll n) {
+    ll t = (ll) cbrt(n);
     if ((t + 1) * (t + 1) * (t + 1) <= n) {
         return t + 1;
     } else if (t * t * t <= n) {
@@ -35,7 +62,7 @@ constexpr long long icbrt(long long n) {
     }
 }
 
-long long iroot(long long x, long long n) {
+ll iroot(ll x, ll n) {
     if (n == 1) {
         return x;
     } else if (n == 2) {
@@ -43,7 +70,7 @@ long long iroot(long long x, long long n) {
     } else if (n == 3) {
         return icbrt(x);
     } else {
-        long long test = (long long) pow(x, 1.0 / n);
+        ll test = (ll) pow(x, 1.0 / n);
         if (pow(test + 1, n) <= x) {
             return test + 1;
         } else {
@@ -66,7 +93,7 @@ int main() {
     start = std::chrono::high_resolution_clock::now();
 
     // Problem result
-    long long result = 0;
+    ll result = 0;
 
     // Solution
 
