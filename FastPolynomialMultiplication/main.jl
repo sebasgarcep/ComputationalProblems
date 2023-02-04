@@ -65,8 +65,8 @@ end
 
 function main()
     # Test polynomial coefficients
-    pa = [3, 4, 1, 5, 6, 9, 2, 1, 1, 7]
-    pb = [-1, 0, 0, 0, 1, 1]
+    pa = rand(-10:10, 100000)
+    pb = rand(-10:10, 100000)
 
     # Test slow algorithm
     start_slow = time()
