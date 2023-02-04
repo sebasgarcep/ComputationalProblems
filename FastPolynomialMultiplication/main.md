@@ -6,7 +6,7 @@ In the next section we will prove formulas for the FFT which is an algorithm for
 
 ## Cooley-Tukey FFT
 
-Fix a value of $k$ and let $p(x) = p_0 + p_1 x + p_2 x^2 + \dots + p_{k-1} x^{k-1}$, where the order of $p$ may be smaller than $k-1$. Suppose we want to evaluate $p$ at $w^0, w^1, \dots, w^{k-1}$ where $w = e^{2 \pi i / k}$. Notice that $p$ can be rewritten as
+Fix a value of $k$ such that $k$ is a power of $2$ and let $p(x) = p_0 + p_1 x + p_2 x^2 + \dots + p_{k-1} x^{k-1}$, where the order of $p$ may be smaller than $k-1$. Suppose we want to evaluate $p$ at $w^0, w^1, \dots, w^{k-1}$ where $w = e^{2 \pi i / k}$. Notice that $p$ can be rewritten as
 
 $$
 p(x) = (p_0 + p_2 x^2 + \dots) + x (p_1 + p_3 x^2 + \dots)
@@ -42,16 +42,7 @@ p_0 + p_2 w'^j + \dots \\
 p_1 + p_3 w'^j + \dots \\
 $$
 
-Let $p_e(x) = p_0 + p_2 x + p_4 x^2 + \dots$ and $p_o(x) = p_1 + p_3 x + p_5 x^2 + \dots$. Then these evaluations correspond to the FFTs of $p_e$ and $p_o$ respectively of degree $k'$, which instantly motivates a recursive implementation of the FFT. The case $k = 1$ is just an evaluation of the polynomial at $1$, i.e. the sum of the coefficients.
-
-WHAT IF $k$ IS ODD????
-
-$$
-w^0 = 1 \\
-w^j_x = w^{-j}_x \\
-w^j_y = -w^{-j}_y \\
-
-$$
+Let $p_e(x) = p_0 + p_2 x + p_4 x^2 + \dots$ and $p_o(x) = p_1 + p_3 x + p_5 x^2 + \dots$. Then these evaluations correspond to the FFTs of $p_e$ and $p_o$ respectively of degree $k'$, which instantly motivates a recursive implementation of the FFT. The result for the case $k = 1$ is trivially equal to the input polynomial.
 
 ## Cooley-Tukey Inverse FFT (IFFT)
 

@@ -37,11 +37,16 @@ function fastpolymul(pa::Vector{Int64}, pb::Vector{Int64})::Vector{Int64}
     nb = length(pb)
     nc = na + nb - 1
 
+    np = 1
+    while np < nc
+        np = np << 1
+    end
+
     # Coefficient to value representation
-    pa_copy = complex(zeros(nc))
+    pa_copy = complex(zeros(np))
     pa_copy[1:na] = pa
 
-    pb_copy = complex(zeros(nc))
+    pb_copy = complex(zeros(np))
     pb_copy[1:nb] = pb
 
     fa = fft(pa_copy)
@@ -51,32 +56,32 @@ function fastpolymul(pa::Vector{Int64}, pb::Vector{Int64})::Vector{Int64}
     fc = fa .* fb
 
     # Value to coefficient representation
-    res = (1.0 / nc) * fft(fc; sgn=-1.0)
+    res = (1.0 / np) * fft(fc; sgn=-1.0)
+    res = res[1:nc]
 
     # Round to account for numerical error
     return round.(res)
 end
 
 function main()
-    # Begin time measurement
-    start = time()
-    result = 0
-
+    # Test polynomial coefficients
     pa = [3, 4, 1, 5, 6, 9, 2, 1, 1, 7]
     pb = [-1, 0, 0, 0, 1, 1]
 
+    # Test slow algorithm
+    start_slow = time()
     slowres = slowpolymul(pa, pb)
-    println(slowres)
+    elapsed_slow = time() - start_slow
+    @printf("Took: %.4f secs\n", elapsed_slow)
 
+    # Test fast multiplication
+    start_fast = time()
     fastres = fastpolymul(pa, pb)
-    println(fastres)
+    elapsed_fast = time() - start_fast
+    @printf("Took: %.4f secs\n", elapsed_fast)
 
     # Show result
-    println(result)
-
-    # End time measurement
-    elapsed = time() - start
-    @printf("Took: %.4f secs\n", elapsed)
+    println("Norm of difference (should be 0): ", norm(slowres - fastres))
 end
 
 main()
