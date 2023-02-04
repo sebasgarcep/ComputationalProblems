@@ -46,7 +46,12 @@ Let $p_e(x) = p_0 + p_2 x + p_4 x^2 + \dots$ and $p_o(x) = p_1 + p_3 x + p_5 x^2
 
 WHAT IF $k$ IS ODD????
 
+$$
+w^0 = 1 \\
+w^j_x = w^{-j}_x \\
+w^j_y = -w^{-j}_y \\
 
+$$
 
 ## Cooley-Tukey Inverse FFT (IFFT)
 

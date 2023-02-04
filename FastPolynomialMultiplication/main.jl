@@ -62,7 +62,7 @@ function main()
     start = time()
     result = 0
 
-    pa = [3, 4, 1]
+    pa = [3, 4, 1, 5, 6, 9, 2, 1, 1, 7]
     pb = [-1, 0, 0, 0, 1, 1]
 
     slowres = slowpolymul(pa, pb)
