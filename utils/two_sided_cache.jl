@@ -1,7 +1,5 @@
 module TwoSidedCache
 
-export Cache, get, set
-
 struct Cache
     bound::Int64
     limit::Int64

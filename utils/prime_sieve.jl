@@ -1,7 +1,5 @@
 module PrimeSieve
 
-export Calculator
-
 struct Calculator
     limit::Int64
     is_prime::Vector{Bool}

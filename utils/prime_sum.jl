@@ -5,8 +5,6 @@ import ..PrimeSieve
 import ..TwoSidedCache
 import ..PrimeCount
 
-export Calculator, get, phi
-
 struct Calculator
     modulo::Int64
     cache::TwoSidedCache.Cache

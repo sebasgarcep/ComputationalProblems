@@ -4,8 +4,6 @@ import ..Common: iroot
 import ..PrimeSieve
 import ..TwoSidedCache
 
-export Calculator, get, phi
-
 struct Calculator
     cache::TwoSidedCache.Cache
     sieve::PrimeSieve.Calculator

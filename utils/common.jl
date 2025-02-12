@@ -1,7 +1,5 @@
 module Common
 
-export iroot
-
 """
 Computes the b-th root of a
 """
