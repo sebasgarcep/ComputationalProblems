@@ -102,7 +102,7 @@ T(N)
 \end{align*}
 $$
 
-Looking at the first sum
+where $\Sigma_1(N) = \sum_{n = 1}^N n$. Looking at the first sum
 
 $$
 \begin{align*}

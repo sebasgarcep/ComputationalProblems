@@ -1,6 +1,25 @@
 using Printf
 
 # Prime sieve
+
+# FIXME: CREATE UTILS LIBRARY
+function iroot(a, b)
+    if b == 1
+        return a
+    end
+
+    if b == 2
+        return isqrt(a)
+    end
+
+    test_value = Int64(floor(Float64(a)^(1.0 / b)))
+    if (test_value + 1)^b <= a
+        return test_value + 1
+    end
+    
+    return test_value
+end
+
 struct PrimeSieve
     limit::Int64
     is_prime::Vector{Bool}
@@ -97,8 +116,33 @@ function calc_pi(this::PrimeCounter, x::Int64)::Int64
     if cached !== nothing
         return cached
     end
-    a = calc_pi(this, isqrt(x))
-    value = calc_legendre_pi(this, x, a) + a - 1
+
+    if x <= 0
+        return 0
+    end
+
+    # Enumeration constants
+    a = calc_pi(this, iroot(x, 4))
+    b = calc_pi(this, iroot(x, 2))
+    c = calc_pi(this, iroot(x, 3))
+
+    # Base answer
+    value = a - 1 + calc_legendre_pi(this, x, a)
+
+    # Calculate P2(x, a)
+    value -= binomial(a, 2) - binomial(b, 2)
+    for i in (a + 1):b
+        x_div_p = fld(x, this.sieve.primes[i])
+        value -= calc_pi(this, x_div_p)
+        # Calculate P3(x, a)
+        if i <= c
+            bi = calc_pi(this, isqrt(x_div_p))
+            for j in i:bi
+                value -= calc_pi(this, fld(x_div_p, this.sieve.primes[j])) - (j - 1)
+            end
+        end
+    end
+
     update_cache(this.cache, x, value)
     return value
 end
@@ -154,9 +198,58 @@ function calc_sigma(this::PrimeAdder, x::Int64)::Int64
     if cached !== nothing
         return cached
     end
-    a = calc_pi(this.counter, isqrt(x))
-    b = calc_sigma(this, isqrt(x))
-    value = calc_legendre_sigma(this, x, a) + b - 1
+
+    if x <= 0
+        return 0
+    end
+
+    # Enumeration constants
+    a = calc_pi(this.counter, iroot(x, 4))
+    b = calc_pi(this.counter, iroot(x, 2))
+    c = calc_pi(this.counter, iroot(x, 3))
+
+    value = 0
+
+    if a > 0
+        value += calc_sigma(this, this.sieve.primes[a])
+        value = mod(value, this.modulo)
+    end
+
+    # Base answer
+    value += mod(
+        - 1 + calc_legendre_sigma(this, x, a),
+        this.modulo
+    )
+
+    if x == 10
+        println(value)
+    end
+
+    # Calculate P2(x, a)
+    for i in (a + 1):b
+        p_i = this.sieve.primes[i]
+        x_div_pi = fld(x, p_i);
+        diff_i = mod(
+            calc_sigma(this, x_div_pi) - calc_sigma(this, p_i - 1),
+            this.modulo
+        )
+        value = mod(value - mod(p_i * diff_i, this.modulo), this.modulo)
+        # Calculate P3(x, a)
+        if i <= c
+            ci = calc_pi(this.counter, isqrt(x_div_pi))
+            for j in i:ci
+                p_j = this.sieve.primes[j]
+                x_div_pi_pj = fld(x_div_pi, p_j)
+                diff_ij = mod(
+                    calc_sigma(this, x_div_pi_pj) - calc_sigma(this, p_j - 1),
+                    this.modulo
+                );
+                coeff_ij = mod(p_i * p_j, this.modulo)
+                value = mod(value - mod(coeff_ij * diff_ij, this.modulo), this.modulo)
+            end
+        end
+    end
+
     update_cache(this.cache, x, value)
     return value
 end
