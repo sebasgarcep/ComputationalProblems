@@ -34,6 +34,9 @@ function main()
 
     w = 0
     for q in 1:limit
+        if mu_memo[q] == 0
+            continue
+        end
         g = 0
         x = fld(n, q^2)
         for k in 1:isqrt(x)
