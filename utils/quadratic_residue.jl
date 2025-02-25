@@ -68,4 +68,14 @@ function tonelli_shanks(n, p)
     end
 end
 
+"""
+Given a root for f(x) modulo p^m, returns a root for
+f(x) modulo p^(m + 1). This root only exists if f'(r) != 0 modulo p.
+"""
+function hensel_lifting(f, f_prime, p, m, r)
+    t = mod(-fld(f(r), p) * invmod(f_prime(r), p), p)
+    s = mod(r + t * p^m, p^(m + 1))
+    return s
+end
+
 end
