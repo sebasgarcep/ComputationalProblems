@@ -195,10 +195,17 @@ function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
     current_value = get_range(this, index, index)
     update_value = mod(value * invmod(current_value, this.modulo), this.modulo)
     current_index = index
+    memo_lower_mult = get_range(this.mult_tree, 1, index - 1)
+    memo_lower_range = get_range(this, 1, index - 1)
     while current_index <= length(this.data)
         lower_index = current_index - lsb(current_index) + 1
-        lower_range = get_range(this, lower_index, index - 1)
-        lower_mult = get_range(this.mult_tree, lower_index, index - 1)
+        if lower_index == 1
+            lower_mult = memo_lower_mult
+            lower_range = memo_lower_range
+        else
+            lower_range = get_range(this, lower_index, index - 1)
+            lower_mult = get_range(this.mult_tree, lower_index, index - 1)
+        end
         term = mod(
             mod(
                 this.data[current_index] - lower_range,
