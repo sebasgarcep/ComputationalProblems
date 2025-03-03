@@ -203,8 +203,8 @@ function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
             lower_mult = memo_lower_mult
             lower_range = memo_lower_range
         else
-            lower_range = get_range(this, lower_index, index - 1)
             lower_mult = get_range(this.mult_tree, lower_index, index - 1)
+            lower_range = get_range(this, lower_index, index - 1)
         end
         term = mod(
             mod(
