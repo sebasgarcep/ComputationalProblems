@@ -106,12 +106,9 @@ end
 Sets the value of a given x_i.
 """
 function set(this::Multiplicative{T}, index::Int64, value::T) where T<:Integer
-    rem_value = mod(
-        invmod(get(this, index), this.modulo) * get(this, index - 1),
-        this.modulo
-    )
-    update(this, index, rem_value)
-    update(this, index, value)
+    current_value = get_range(this, index, index)
+    update_value = mod(value * invmod(current_value, this.modulo), this.modulo)
+    update(this, index, update_value)
 end
 
 """
@@ -196,6 +193,7 @@ Sets the value of a given x_i.
 """
 function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
     current_value = get_range(this, index, index)
+    update_value = mod(value * invmod(current_value, this.modulo), this.modulo)
     current_index = index
     while current_index <= length(this.data)
         lower_index = current_index - lsb(current_index) + 1
@@ -211,8 +209,7 @@ function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
             ),
             this.modulo
         )
-        term = mod(term * invmod(current_value, this.modulo), this.modulo)
-        term = mod(term * mod(value, this.modulo), this.modulo)
+        term = mod(term * update_value, this.modulo)
         this.data[current_index] = mod(
             lower_range + mod(lower_mult * term, this.modulo),
             this.modulo
