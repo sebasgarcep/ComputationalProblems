@@ -41,7 +41,7 @@ end
 """
 Sets the value of a given x_i.
 """
-function set(this::Additive, index::Int64, value::T) where T<:Integer
+function set(this::Additive{T}, index::Int64, value::T) where T<:Integer
     rem_value = get(this, index - 1) - get(this, index)
     update(this, index, rem_value)
     update(this, index, value)
@@ -105,7 +105,7 @@ end
 """
 Sets the value of a given x_i.
 """
-function set(this::Multiplicative, index::Int64, value::T) where T<:Integer
+function set(this::Multiplicative{T}, index::Int64, value::T) where T<:Integer
     rem_value = mod(
         invmod(get(this, index), this.modulo) * get(this, index - 1),
         this.modulo
@@ -146,8 +146,8 @@ struct SumProduct{T<:Integer}
             total = mod(total + current, modulo)
             lower = index - lsb(index)
             data[index] = mod(
-                mod(total - FenwickTree.get(tree, lower), modulo) *
-                invmod(FenwickTree.get(mult_tree, lower), modulo),
+                mod(total - get(tree, lower), modulo) *
+                invmod(get(mult_tree, lower), modulo),
                 modulo
             )
         end
@@ -166,7 +166,7 @@ function get(this::SumProduct{T}, index::Int64)::T where T<:Integer
         next_index = current_index - lsb(current_index)
         total = mod(
             this.data[current_index] + mod(
-                FenwickTree.get_range(
+                get_range(
                     this.mult_tree,
                     next_index + 1,
                     current_index
@@ -181,10 +181,45 @@ function get(this::SumProduct{T}, index::Int64)::T where T<:Integer
 end
 
 """
+Returns sum(a <= i <= b) prod(a <= j <= i) x_j, where 1 <= a <= b <= n.
+"""
+function get_range(this::SumProduct{T}, a::Int64, b::Int64)::T where T<:Integer
+    return mod(
+        mod(get(this, b) - get(this, a - 1), this.modulo) *
+        invmod(get(this.mult_tree, a - 1), this.modulo),
+        this.modulo
+    )
+end
+
+"""
 Sets the value of a given x_i.
 """
-function set(this::SumProduct{T}, index::Int64)::T where T<:Integer
-
+function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
+    current_value = get_range(this, index, index)
+    current_index = index
+    while current_index <= length(this.data)
+        lower_index = current_index - lsb(current_index) + 1
+        lower_range = get_range(this, lower_index, index - 1)
+        lower_mult = get_range(this.mult_tree, lower_index, index - 1)
+        term = mod(
+            mod(
+                this.data[current_index] - lower_range,
+                this.modulo
+            ) * invmod(
+                lower_mult,
+                this.modulo
+            ),
+            this.modulo
+        )
+        term = mod(term * invmod(current_value, this.modulo), this.modulo)
+        term = mod(term * mod(value, this.modulo), this.modulo)
+        this.data[current_index] = mod(
+            lower_range + mod(lower_mult * term, this.modulo),
+            this.modulo
+        )
+        current_index += lsb(current_index)
+    end
+    set(this.mult_tree, index, value)
 end
 
 """
