@@ -194,6 +194,13 @@ Sets the value of a given x_i.
 function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
     current_value = get_range(this, index, index)
     update_value = mod(value * invmod(current_value, this.modulo), this.modulo)
+    update(this, index, update_value)
+end
+
+"""
+Multiplies x_i by the given value.
+"""
+function update(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
     current_index = index
     memo_lower_mult = get_range(this.mult_tree, 1, index - 1)
     memo_lower_range = get_range(this, 1, index - 1)
@@ -216,14 +223,14 @@ function set(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
             ),
             this.modulo
         )
-        term = mod(term * update_value, this.modulo)
+        term = mod(term * value, this.modulo)
         this.data[current_index] = mod(
             lower_range + mod(lower_mult * term, this.modulo),
             this.modulo
         )
         current_index += lsb(current_index)
     end
-    set(this.mult_tree, index, value)
+    update(this.mult_tree, index, value)
 end
 
 """
