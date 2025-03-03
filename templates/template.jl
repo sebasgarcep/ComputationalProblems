@@ -3,8 +3,6 @@ include("../includes.jl")
 using Printf
 
 function main()
-    # Begin time measurement
-    start = time()
     result = 0
 
     # Problem parameters
@@ -13,12 +11,7 @@ function main()
 
     # Solution
 
-    # Show result
-    println(result)
-
-    # End time measurement
-    elapsed = time() - start
-    @printf("Took: %.4f secs\n", elapsed)
+    return result
 end
 
-main()
+@time println(main())

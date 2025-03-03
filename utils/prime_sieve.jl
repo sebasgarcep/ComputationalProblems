@@ -21,4 +21,13 @@ struct Calculator
     end
 end
 
+function get_index_table(this::Calculator)
+    index_table = [0 for _ in 1:this.limit]
+    for i in eachindex(this.primes)
+        p = this.primes[i]
+        index_table[p] = i
+    end
+    return index_table
+end
+
 end
