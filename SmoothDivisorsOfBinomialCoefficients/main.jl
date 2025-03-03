@@ -27,9 +27,11 @@ function main()
     result = mod(result, m)
 
     index_table = PrimeSieve.get_index_table(sieve)
-    coefficients = [get_coefficient(sieve.primes, m, i) for i in 1:(limit - 1)]
-    tree = FenwickTree.SumProduct(coefficients, m)
-    factorization = zeros(Int64, limit)
+    prime_inv = [invmod(p, m) for p in sieve.primes]
+    tree = FenwickTree.SumProduct(
+        [get_coefficient(sieve.primes, m, i) for i in 1:(limit - 1)],
+        m
+    )
     for r in 0:fld(n, 2)
         term = FenwickTree.get(tree, limit - 1)
         if r == n - r
@@ -42,18 +44,18 @@ function main()
             for (p, e) in nume_factors
                 idx = index_table[p]
                 if idx <= limit - 1
-                    factorization[idx] += e
-                    next_value = mod(powermod(p, factorization[idx], m) * coefficients[idx], m)
-                    FenwickTree.set(tree, idx, next_value)
+                    next_update = powermod(p, e, m)
+                    next_update_inv = powermod(prime_inv[idx], e, m)
+                    FenwickTree.update(tree, idx, next_update, next_update_inv)
                 end
             end
             deno_factors = factorize(sieve.primes, r + 1)
             for (p, e) in deno_factors
                 idx = index_table[p]
                 if idx <= limit - 1
-                    factorization[idx] -= e
-                    next_value = mod(powermod(p, factorization[idx], m) * coefficients[idx], m)
-                    FenwickTree.set(tree, idx, next_value)
+                    next_update = powermod(prime_inv[idx], e, m)
+                    next_update_inv = powermod(p, e, m)
+                    FenwickTree.update(tree, idx, next_update, next_update_inv)
                 end
             end
         end
