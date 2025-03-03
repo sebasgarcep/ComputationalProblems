@@ -129,12 +129,14 @@ Keeps track of sum(1 <= i <= k) prod(1 <= j <= i) x_j, where 1 <= k <= n.
 struct SumProduct{T<:Integer}
     data::Vector{T}
     mult_tree::Multiplicative{T}
+    minv_tree::Multiplicative{T}
     modulo::T
 
     function SumProduct(values::Vector{T}, modulo::T) where T<:Integer
         mult_tree = Multiplicative(values, modulo)
+        minv_tree = Multiplicative([invmod(x, modulo) for x in values], modulo)
         data = zeros(T, length(values))
-        tree = new{T}(data, mult_tree, modulo)
+        tree = new{T}(data, mult_tree, minv_tree, modulo)
 
         total = 0
         current = 1
@@ -144,7 +146,7 @@ struct SumProduct{T<:Integer}
             lower = index - lsb(index)
             data[index] = mod(
                 mod(total - get(tree, lower), modulo) *
-                invmod(get(mult_tree, lower), modulo),
+                get(minv_tree, lower),
                 modulo
             )
         end
@@ -163,10 +165,10 @@ function get(this::SumProduct{T}, index::Int64)::T where T<:Integer
         next_index = current_index - lsb(current_index)
         total = mod(
             this.data[current_index] + mod(
-                get_range(
-                    this.mult_tree,
-                    next_index + 1,
-                    current_index
+                mod(
+                    get(this.mult_tree, current_index) *
+                    get(this.minv_tree, next_index),
+                    this.modulo
                 ) * total,
                 this.modulo
             ),
@@ -183,7 +185,7 @@ Returns sum(a <= i <= b) prod(a <= j <= i) x_j, where 1 <= a <= b <= n.
 function get_range(this::SumProduct{T}, a::Int64, b::Int64)::T where T<:Integer
     return mod(
         mod(get(this, b) - get(this, a - 1), this.modulo) *
-        invmod(get(this.mult_tree, a - 1), this.modulo),
+        get(this.minv_tree, a - 1),
         this.modulo
     )
 end
@@ -200,27 +202,40 @@ end
 """
 Multiplies x_i by the given value.
 """
-function update(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
+function update(this::SumProduct{T}, index::Int64, value::T, value_inv::Union{Nothing, T} = nothing) where T<:Integer
+    if value_inv === nothing
+        value_inv = invmod(value, this.modulo)
+    elseif mod(value * value_inv, this.modulo) != 1
+        throw(error("value_inv not the actual inverse."))
+    end
     current_index = index
-    memo_lower_mult = get_range(this.mult_tree, 1, index - 1)
-    memo_lower_range = get_range(this, 1, index - 1)
+    memo_lower_mult = get(this.mult_tree, index - 1)
+    memo_lower_minv = get(this.minv_tree, index - 1)
+    memo_lower_range = get(this, index - 1)
     while current_index <= length(this.data)
         lower_index = current_index - lsb(current_index) + 1
         if lower_index == 1
             lower_mult = memo_lower_mult
+            lower_minv = memo_lower_minv
             lower_range = memo_lower_range
         else
-            lower_mult = get_range(this.mult_tree, lower_index, index - 1)
+            lower_mult = mod(
+                get(this.mult_tree, index - 1) *
+                get(this.minv_tree, lower_index - 1),
+                this.modulo
+            )
+            lower_minv = mod(
+                get(this.minv_tree, index - 1) *
+                get(this.mult_tree, lower_index - 1),
+                this.modulo
+            )
             lower_range = get_range(this, lower_index, index - 1)
         end
         term = mod(
             mod(
                 this.data[current_index] - lower_range,
                 this.modulo
-            ) * invmod(
-                lower_mult,
-                this.modulo
-            ),
+            ) * lower_minv,
             this.modulo
         )
         term = mod(term * value, this.modulo)
@@ -231,6 +246,7 @@ function update(this::SumProduct{T}, index::Int64, value::T) where T<:Integer
         current_index += lsb(current_index)
     end
     update(this.mult_tree, index, value)
+    update(this.minv_tree, index, value_inv)
 end
 
 """
