@@ -3,14 +3,12 @@ include("../includes.jl")
 using Printf
 
 function main()
-    result = 0
-
     # Problem parameters
 
     # Algorithm parameters
 
     # Solution
-
+    result = 0
     return result
 end
 
