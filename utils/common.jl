@@ -36,4 +36,15 @@ function summation_formula(modulo::Int64, x::Int64)::Int64
     return value
 end
 
+"""
+Computes n! mod m
+"""
+function factorial_mod(n::Int64, m::Int64)
+    v = 1
+    for i in 1:n
+        v = mod(v * i, m)
+    end
+    return v
+end
+
 end
