@@ -49,7 +49,7 @@ function main()
         end
     end
 
-    result_poly = Polynomial.slowmulmod(left_poly, right_poly, m)
+    result_poly = Polynomial.fastmulmod(left_poly, right_poly, m)
     result_poly = mod.(-result_poly, m)
 
     result = mod(result_poly[w + 1], m)
