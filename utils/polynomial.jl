@@ -99,13 +99,11 @@ function ntt(p::Vector{Int64}, n::Int64, w::Int64, k::Int64)
     return result
 end
 
-# FIXME: STILL HAS A BUG
 function fastmulmod(pa::Vector{Int64}, pb::Vector{Int64}, n::Int64)::Vector{Int64}
     test_cases = [
         (998244353, 15311432, 23),
         (167772161, 243, 25),
-        # We don't need the third prime for now
-        # (469762049, 2187, 26),
+        (469762049, 2187, 26),
     ]
 
     # Calculate sizes
@@ -145,17 +143,35 @@ function fastmulmod(pa::Vector{Int64}, pb::Vector{Int64}, n::Int64)::Vector{Int6
         push!(res_list, res)
     end
 
-    # Garner's algorithm with two primes
-    pc = zeros(lc)
-    p_1 = test_cases[1][1]
-    p_2 = test_cases[2][1]
+    # Garner's algorithm
+    pc = zeros(Int128, lc)
+    pr = [p for (p, w, k) in test_cases]
+    x = zeros(Int128, length(test_cases))
     for i in 1:lc
-        x_1 = res_list[1][i]
-        x_2 = mod(mod(res_list[2][i] - x_1, p_2) * invmod(p_1, p_2), p_2)
-        pc[i] = mod(x_1 + mod(x_2 * p_1, n), n)
+        for j in 1:length(test_cases)
+            x[j] = res_list[j][i]
+            # Calculate the minus terms of x_i
+            for k in 1:(j - 1)
+                t = mod(x[k], pr[j])
+                for r in 1:(k - 1)
+                    t = mod(t * pr[r], pr[j])
+                end
+                x[j] = mod(x[j] - t, pr[j])
+            end
+            # Calculate the prime inverses of x_i
+            for k in 1:(j - 1)
+                x[j] = mod(x[j] * invmod(pr[k], pr[j]), pr[j])
+            end
+            # Calculate p_i
+            ti = mod(x[j], n)
+            for k in 1:(j - 1)
+                ti = mod(ti * pr[k], n)
+            end
+            pc[i] = mod(pc[i] + ti, n)
+        end
     end
 
-    return pc[1:lc]
+    return Int64.(pc[1:lc])
 end
 
 end
