@@ -1,4 +1,4 @@
-# Functional Difference
+# Functional Inverse
 
 Define the <i>$(N,M)$-functional inverse of $x^2$</i> to be the monic polynomial $Q(x)$ of degree $N+1$ such that $Q(n^2) \equiv n \pmod M$ for all integers $0 \le n \le N$ and all coefficients are non-negative and smaller than $M$.
 
